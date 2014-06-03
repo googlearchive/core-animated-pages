@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+
+  <script src="../platform/platform.js"></script>
+  <link href="core-animated-pages.html" rel="import">
+
+  <style>
+    body {
+      font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      margin: 0;
+      font-size: 72px;
+    }
+
+    core-animated-pages {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+    }
+
+    section > div {
+      height: 100%;
+      color: white;
+    }
+
+  </style>
+
+</head>
+<body unresolved>
+  <core-animated-pages onclick="stuff();">
+    <section>
+      <div layout vertical center center-justified style="background:red;">
+        <div>1</div>
+      </div>
+    </section>
+    <section>
+      <div layout vertical center center-justified style="background:blue;">
+        <div>2</div>
+      </div>
+    </section>
+    <section>
+      <div layout vertical center center-justified style="background:purple;">
+        <div>3</div>
+      </div>
+    </section>
+    <section>
+      <div layout vertical center center-justified style="background:orange;">
+        <div>4</div>
+      </div>
+    </section>
+    <section>
+      <div layout vertical center center-justified style="background:green;">
+        <div>5</div>
+      </div>
+    </section>
+  </core-animated-pages>
+
+  <script>
+    function stuff() {
+      var p = document.querySelector('core-animated-pages');
+      p.selected = (p.selected + 1) % 5;
+      console.log(p.selected);
+    }
+  </script>
+</body>
+</html>

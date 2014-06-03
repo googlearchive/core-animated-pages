@@ -1,0 +1,230 @@
+<link href="../polymer/polymer.html" rel="import">
+<link href="../core-selector/core-selector.html" rel="import">
+<link href="../core-transition/core-transition.html" rel="import">
+
+<!--
+
+`core-animated-pages` selects one of its children "pages" to show and runs a transition
+when switching between them. By default, children are cross faded with each other.
+
+-->
+<polymer-element name="core-animated-pages" extends="core-selector" notap>
+
+<template>
+
+  <style>
+    :host {
+      display: block;
+      position: relative;
+    }
+
+    polyfill-next-selector { content: ':host > *'; }
+    ::content > * {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      visibility: hidden;
+      z-index: -1000;
+    }
+
+    polyfill-next-selector { content: ':host > .core-selected'; }
+    ::content > .core-selected {
+      visibility: visible;
+      z-index: auto;
+    }
+
+    polyfill-next-selector { content: ':host > [animate]'; }
+    ::content > [animate] {
+      visibility: visible;
+      z-index: auto;
+    }
+
+    polyfill-next-selector { content: ':host > * :not([hero])'; }
+    ::content > * *:not([hero]) {
+      -webkit-transition: opacity 1800ms ease-out;
+      transition: opacity 1800ms ease-out;
+      opacity: 0;
+    }
+
+    polyfill-next-selector { content: ':host > .core-selected[animate] *'; }
+    ::content > .core-selected[animate] * {
+      opacity: 1;
+    }
+
+    polyfill-next-selector { content: ':host > * [hero]'; }
+    ::content > * [hero] {
+      opacity: 0;
+    }
+  </style>
+
+  <shadow></shadow>
+
+</template>
+
+<script>
+
+  Polymer({
+
+    eventDelegates: {
+      webkitTransitionEnd: 'transitionEnd',
+      transitionEnd: 'transitionEnd'
+    },
+
+    selected: 0,
+
+    registerCallback: function() {
+      this.meta = document.createElement('core-transition');
+    },
+
+    getTransition: function(transitionId) {
+      return this.meta.byId(transitionId);
+    },
+
+    applyTransition: function(src, dst) {
+      this.transitioning = true;
+
+      this.setupHeroTransition(src, dst);
+
+      var transitions = [];
+      var ts$ = src.querySelectorAll('[transition]');
+      for (var i = 0, el; el=ts$[i]; i++) {
+        this.setupTransition(transitions, ts);
+      }
+
+      var td$ = dst.querySelectorAll('[transition]');
+      for (var i = 0, el; el=td$[i]; i++) {
+        this.setupTransition(transitions, ts);
+      }
+
+      transitions.forEach(function(transition) {
+        transition.t.setup(transition.t.el, transition.t.args)
+      });
+
+      this.src = src;
+      this.dst = dst;
+      this.dst.setAttribute('animate', '');
+
+      getComputedStyle(src).top;
+
+      this.heroes.forEach(function(h) {
+        var duration = '1s';
+        var easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+        h.h1.style.webkitTransition = 'border-radius ' + duration + ' ' + easing + ', ' +
+          'width ' + duration + ' ' + easing + ', height ' + duration + ' ' + easing + ', ' +
+          '-webkit-transform ' + duration + ' ' + easing;
+        h.h1.style.borderRadius = h.r1;
+        h.h1.style.webkitTransform = 'none';
+      });
+
+      transitions.forEach(function(transition) {
+        transition.t.go(transition.t.el, transition.t.args);
+      });
+    },
+
+    setupTransition: function(transitions, el) {
+      var t = el.getAttribute('transition');
+      var tt = this.getTransition(t);
+      if (tt) {
+        transitions.push({
+          t: tt,
+          el: el
+        });
+      }
+    },
+
+    setupHeroTransition: function(src, dst) {
+      this.heroes = [];
+
+      var h$ = src.querySelectorAll('[hero]');
+      for (var i=0, h0; h0=h$[i]; i++) {
+        var v = h0.getAttribute('hero');
+        var h1 = dst.querySelector('[hero="' + v + '"]');
+
+        if (h1) {
+          var c0 = getComputedStyle(h0);
+          var c1 = getComputedStyle(h1);
+          var h = {
+            h0: h0,
+            b0: h0.getBoundingClientRect(),
+            r0: c0.borderRadius,
+            h1: h1,
+            b1: h1.getBoundingClientRect(),
+            r1: c1.borderRadius
+          };
+
+          var dl = h.b0.left - h.b1.left;
+          var dt = h.b0.top - h.b1.top;
+          var sw = h.b0.width / h.b1.width;
+          var sh = h.b0.height / h.b1.height;
+
+          // move and scale/resize the dst element
+
+          // h.scaley = h.h0.hasAttribute('scaley');
+          // if (!h.scaley && (sw !== 1 || sh !== 1)) {
+          //   sw = sh = 1;
+          //   h.h1.style.width = h.b0.width + 'px';
+          //   h.h1.style.height = h.b0.height + 'px';
+          // }
+
+          // Also animate the border-radius for the circle-to-square transition
+          if (h.r0 !== h.r1) {
+            h.h1.style.borderRadius = h.r0;
+          }
+
+          h.h1.style.webkitTransform = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
+          h.h1.style.webkitTransformOrigin = '0 0';
+
+          // FIXME
+          if (!h.h0.style.zIndex) {
+            h.h1.style.zIndex = 10000;
+          } else {
+            h.h1.style.zIndex = h.h0.style.zIndex;
+          }
+
+          this.heroes.push(h);
+        }
+      }
+    },
+
+    complete: function() {
+      this.src.removeAttribute('animate');
+
+      this.heroes.forEach(function(h) {
+        h.h1.style.webkitTransition = null;
+        h.h1.style.webkitTransform = null;
+        h.h1.style.zIndex = null;
+        // if (!h.scaley) {
+        //   h.h1.style.width = h.b1.width + 'px';
+        //   h.h1.style.height = h.b1.height + 'px';
+        // }
+      });
+
+      this.transitioning = false;
+      this.fire('core-animated-pages-transition-end');
+    },
+    
+    transitionEnd: function() {
+      if (this.transitioning) {
+        this.job('transitionWatch', function() {
+          this.complete();
+        }, 500);
+      }
+    },
+
+    selectedItemChanged: function(oldItem) {
+      this.super(arguments);
+
+      this.selectedItem.setAttribute('animate', '');
+      if (oldItem && this.selectedItem) {
+        this.applyTransition(oldItem, this.selectedItem);
+      }
+    }
+
+  });
+
+</script>
+
+</polymer-element>
