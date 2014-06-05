@@ -1,5 +1,6 @@
 <link href="../polymer/polymer.html" rel="import">
 <link href="../core-selector/core-selector.html" rel="import">
+<link href="../core-style/core-style.html" rel="import">
 <link href="../core-transition/core-transition.html" rel="import">
 
 <!--
@@ -15,7 +16,7 @@ when switching between them. By default, children are cross faded with each othe
     also a hero.
 
 -->
-<polymer-element name="core-animated-pages" extends="core-selector" notap attributes="heroDuration">
+<polymer-element name="core-animated-pages" extends="core-selector" notap attributes="heroDuration transitions defaultTransition">
 
 <template>
 
@@ -49,7 +50,13 @@ when switching between them. By default, children are cross faded with each othe
       z-index: auto;
     }
 
+    polyfill-next-selector { content: ':host > .core-selected [hero]'; }
+    ::content > .core-selected [hero] {
+      z-index: 10000;
+    }
+
     /* Cross fade everything except for heroes */
+    /*
     polyfill-next-selector { content: ':host > * *:not([hero]):not([hero-p])'; }
     ::content > * *:not([hero]):not([hero-p]) {
       -webkit-transition: opacity 1800ms ease-out;
@@ -75,8 +82,10 @@ when switching between them. By default, children are cross faded with each othe
       opacity: 1;
       z-index: 10000;
     }
+    */
 
     /* Only background-color is allowed for the hero's parents, no opacity transitions */
+    /*
     polyfill-next-selector { content: ':host > * [hero-p]'; }
     ::content > * [hero-p] {
       -webkit-transition: background-color 1800ms ease-out;
@@ -88,12 +97,17 @@ when switching between them. By default, children are cross faded with each othe
     ::content > *:not(.core-selected) [hero-p] {
       background-color: rgba(0, 0, 0, 0);
     }
+    */
 
     polyfill-next-selector { content: ':host > .core-selected [hero-p]'; }
     ::content > .core-selected [hero-p] {
       /*z-index: 10000;*/
     }
   </style>
+
+  <template repeat="{{transitions}}">
+    <core-style ref="{{}}"></core-style>
+  </template>
 
   <shadow></shadow>
 
@@ -121,10 +135,23 @@ when switching between them. By default, children are cross faded with each othe
 
     },
 
+    transitions: [],
+    defaultTransition: '',
+
     selected: 0,
 
     registerCallback: function() {
       this.meta = document.createElement('core-transition');
+    },
+
+    defaultTransitionChanged: function(old) {
+      if (old) {
+        this.classList.remove(old);
+      }
+      if (this.defaultTransition) {
+        this.classList.add(this.defaultTransition);
+      }
+      console.log(old + ' -> ' + this.defaultTransition);
     },
 
     getTransition: function(transitionId) {

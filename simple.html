@@ -4,20 +4,23 @@
 
   <script src="../platform/platform.js"></script>
   <link href="core-animated-pages.html" rel="import">
+  <link href="cross-fade.html" rel="import">
+  <link href="slide-from-right.html" rel="import">
 
   <style>
     body {
       font-family: Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       margin: 0;
-      font-size: 72px;
     }
 
     core-animated-pages {
       position: absolute;
-      top: 0;
+      top: 50px;
       right: 0;
       bottom: 0;
       left: 0;
+      font-size: 72px;
+      overflow: hidden;
     }
 
     section > div {
@@ -29,7 +32,12 @@
 
 </head>
 <body unresolved>
-  <core-animated-pages onclick="stuff();">
+  <select onchange="change();">
+    <option value="cross-fade" selected>cross-fade</option>
+    <option value="slide-from-right">slide-from-right</option>
+  </select>
+
+  <core-animated-pages onclick="stuff();" transitions='["cross-fade","slide-from-right"]' defaultTransition="cross-fade">
     <section>
       <div layout vertical center center-justified style="background:red;">
         <div>1</div>
@@ -58,10 +66,24 @@
   </core-animated-pages>
 
   <script>
+    function change() {
+      var s = document.querySelector('select');
+      var transition = s.options[s.selectedIndex].value;
+      document.querySelector('core-animated-pages').defaultTransition = transition;
+    }
+
+    var up = true;
+    var max = 4;
     function stuff() {
       var p = document.querySelector('core-animated-pages');
-      p.selected = (p.selected + 1) % 5;
-      console.log(p.selected);
+      if (up && p.selected === max || !up && p.selected === 0) {
+        up = !up;
+      }
+      if (up) {
+        p.selected += 1;
+      } else {
+        p.selected -= 1;
+      }
     }
   </script>
 </body>
