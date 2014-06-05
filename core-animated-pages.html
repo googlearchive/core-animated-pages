@@ -50,58 +50,16 @@ when switching between them. By default, children are cross faded with each othe
       z-index: auto;
     }
 
-    polyfill-next-selector { content: ':host > .core-selected [hero]'; }
-    ::content > .core-selected [hero] {
-      z-index: 10000;
-    }
-
-    /* Cross fade everything except for heroes */
-    /*
-    polyfill-next-selector { content: ':host > * *:not([hero]):not([hero-p])'; }
-    ::content > * *:not([hero]):not([hero-p]) {
-      -webkit-transition: opacity 1800ms ease-out;
-      transition: opacity 1800ms ease-out;
-    }
-
-    ::content > *:not(.core-selected) * {
-      opacity: 0;
-    }
-
-    polyfill-next-selector { content: ':host > .core-selected *:not([hero])'; }
-    ::content > .core-selected * {
-      opacity: 1;
-    }
-
-    polyfill-next-selector { content: ':host > * [hero]'; }
-    ::content > * [hero] {
-      opacity: 0;
+    /* Hide heroes that are not currently transitioning */
+    polyfill-next-selector { content: ':host > [animate] [hero]'; }
+    ::content > [animate] [hero] {
+      visibility: hidden;
     }
 
     polyfill-next-selector { content: ':host > .core-selected [hero]'; }
-    ::content > .core-selected [hero] {
-      opacity: 1;
+    ::content > .core-selected[animate] [hero] {
+      visibility: visible;
       z-index: 10000;
-    }
-    */
-
-    /* Only background-color is allowed for the hero's parents, no opacity transitions */
-    /*
-    polyfill-next-selector { content: ':host > * [hero-p]'; }
-    ::content > * [hero-p] {
-      -webkit-transition: background-color 1800ms ease-out;
-      transition: background-color 1800ms ease-out;
-      opacity: 1;
-    }
-
-    polyfill-next-selector { content: ':host > *:not(.core-selected) [hero-p]'; }
-    ::content > *:not(.core-selected) [hero-p] {
-      background-color: rgba(0, 0, 0, 0);
-    }
-    */
-
-    polyfill-next-selector { content: ':host > .core-selected [hero-p]'; }
-    ::content > .core-selected [hero-p] {
-      /*z-index: 10000;*/
     }
   </style>
 

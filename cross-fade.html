@@ -27,16 +27,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     opacity: 1;
   }
 
-  polyfill-next-selector { content: ':host > * [hero]'; }
-  .host(.cross-fade) ::content > * [hero] {
-    opacity: 0;
-  }
-
-  polyfill-next-selector { content: ':host > .core-selected [hero]'; }
-  .host(.cross-fade) ::content > .core-selected [hero] {
-    opacity: 1;
-  }
-
   /* Only background-color is allowed for the hero's parents, no opacity transitions */
   polyfill-next-selector { content: ':host > * [hero-p]'; }
   :host(.cross-fade) ::content > * [hero-p] {

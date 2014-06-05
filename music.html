@@ -94,7 +94,7 @@
       }
     </style>
 
-    <core-animated-pages selected="{{page}}" on-core-animated-pages-transition-end="{{complete}}">
+    <core-animated-pages selected="{{page}}" on-core-animated-pages-transition-end="{{complete}}" xheroDuration="60000">
 
       <section>
 
@@ -117,7 +117,7 @@
 
       <section id="details">
 
-        <div class="card" layout horizontal hero="{{selectedArtist}}-{{selectedAlbum}}">
+        <div class="card" layout horizontal hero="{{selectedArtist}}-{{selectedAlbum}}" on-tap="{{transition}}">
           <div class="card-left" style="background:{{selectedColor}};" hero="{{selectedArtist}}-{{selectedAlbum}}-art"></div>
           <div class="card-right" flex>
             <div layout horizontal center>
@@ -155,18 +155,22 @@
       selectedAlbum: '',
 
       transition: function(e) {
-        var item = e.target.templateInstance.model;
+        if (this.page === 0) {
+          var item = e.target.templateInstance.model;
 
-        this.selectedColor = item.color;
-        this.selectedArtist = item.artist;
-        this.selectedAlbum = item.album;
+          this.selectedColor = item.color;
+          this.selectedArtist = item.artist;
+          this.selectedAlbum = item.album;
 
-        this.hero = e.target.templateInstance.firstNode.nextElementSibling;
-        this.hero.setAttribute('hero', item.artist + '-' + item.album);
-        this.hero2 = this.hero.querySelector('.chip-top');
-        this.hero2.setAttribute('hero', item.artist + '-' + item.album + '-art');
+          this.hero = e.target.templateInstance.firstNode.nextElementSibling;
+          this.hero.setAttribute('hero', item.artist + '-' + item.album);
+          this.hero2 = this.hero.querySelector('.chip-top');
+          this.hero2.setAttribute('hero', item.artist + '-' + item.album + '-art');
 
-        this.page = 1;
+          this.page = 1;
+        } else {
+          this.page = 0;
+        }
       },
 
       complete: function() {
