@@ -138,6 +138,9 @@ when switching between them. By default, children are cross faded with each othe
     transitions: [],
     defaultTransition: '',
 
+    heroes: [],
+    transitioning: [],
+
     selected: 0,
 
     registerCallback: function() {
@@ -159,7 +162,12 @@ when switching between them. By default, children are cross faded with each othe
     },
 
     applyTransition: function(src, dst) {
-      this.transitioning = true;
+      if (this.transitioning.indexOf(src) === -1) {
+        this.transitioning.push(src);
+      }
+      if (this.transitioning.indexOf(dst) === -1) {
+        this.transitioning.push(dst);
+      }
 
       this.setupHeroTransition(src, dst);
 
@@ -178,10 +186,8 @@ when switching between them. By default, children are cross faded with each othe
         transition.t.setup(transition.t.el, transition.t.args)
       });
 
-      this.src = src;
-      this.dst = dst;
-      this.src.setAttribute('animate', '');
-      this.dst.setAttribute('animate', '');
+      src.setAttribute('animate', '');
+      dst.setAttribute('animate', '');
 
       getComputedStyle(src).top;
 
@@ -278,8 +284,10 @@ when switching between them. By default, children are cross faded with each othe
     },
 
     complete: function() {
-      this.src.removeAttribute('animate');
-      this.dst.removeAttribute('animate');
+      this.transitioning.forEach(function(t) {
+        t.removeAttribute('animate');
+      });
+      this.transitioning = [];
 
       this.heroes.forEach(function(h) {
         h.h1.style.webkitTransition = null;
@@ -290,13 +298,14 @@ when switching between them. By default, children are cross faded with each othe
         //   h.h1.style.height = h.b1.height + 'px';
         // }
       });
+      this.heroes = [];
 
-      this.transitioning = false;
       this.fire('core-animated-pages-transition-end');
     },
     
     transitionEnd: function(e) {
-      if (this.transitioning && e.propertyName === '-webkit-transform') {
+      if (this.transitioning.length && this.selectedItem.contains(e.target) &&
+          (e.propertyName === '-webkit-transform' || this.heroes.length === 0)) {
         this.job('transitionWatch', function() {
           this.complete();
         }, 500);
