@@ -1,0 +1,11 @@
+/* Hide heroes that are not currently transitioning */
+polyfill-next-selector { content: ':host > [animate] [hero]'; }
+::content > [animate] [hero] {
+  visibility: hidden;
+}
+
+polyfill-next-selector { content: ':host > .core-selected [hero]'; }
+::content > .core-selected[animate] [hero] {
+  visibility: visible;
+  z-index: 10000;
+}

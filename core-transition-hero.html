@@ -1,0 +1,138 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../core-transition/core-transition.html">
+
+<polymer-element name="core-transition-hero" extends="core-transition">
+<template>
+  <link no-shim href="core-transition-hero.css" rel="stylesheet">
+</template>
+<script>
+  Polymer('core-transition-hero', {
+
+    registerCallback: function(element) {
+      this.transitionStyle = element.templateContent().firstElementChild;
+    },
+
+    // template is just for loading styles, we don't need a shadowRoot
+    fetchTemplate: function() {
+      return null;
+    },
+    
+    go: function(scope, timing) {
+      var props = [
+        'border-radius',
+        'width',
+        'height',
+        '-webkit-transform'
+      ];
+
+      this.listenOnce(scope, 'webkitTransitionEnd', this.complete.bind(this, scope));
+
+      scope._heroes.forEach(function(h) {
+        var wt = [];
+        props.forEach(function(p) {
+          wt.push(p + ' ' + timing.duration + 'ms ' + timing.easing);
+        });
+
+        h.h1.style.webkitTransition = wt.join(', ');
+        h.h1.style.borderRadius = h.r1;
+        h.h1.style.webkitTransform = 'none';
+      });
+    },
+
+    setup: function(src, dst, scope) {
+      // Install styles
+      if (!scope._hasHeroTransitionStyle) {
+        if (!scope.shadowRoot) {
+          scope.createShadowRoot().innerHTML = '<content></content>';
+        }
+        this.installScopeStyle(this.transitionStyle, 'transition', scope.shadowRoot);
+        scope._hasHeroTransitionStyle = true;
+      }
+
+      if (scope._heroes && scope._heroes.length) {
+        this.teardown(scope);
+      } else {
+        scope._heroes = [];
+      }
+
+      // Find all elements with the "hero" attribute in src and dst, and transform
+      // dst to src
+      var h$ = src.querySelectorAll('[hero]');
+      for (var i=0, h0; h0=h$[i]; i++) {
+        var v = h0.getAttribute('hero-id');
+        var h1 = dst.querySelector('[hero-id="' + v + '"]');
+
+        if (v && h1) {
+          var c0 = getComputedStyle(h0);
+          var c1 = getComputedStyle(h1);
+          var h = {
+            h0: h0,
+            b0: h0.getBoundingClientRect(),
+            r0: c0.borderRadius,
+            h1: h1,
+            b1: h1.getBoundingClientRect(),
+            r1: c1.borderRadius
+          };
+
+          var dl = h.b0.left - h.b1.left;
+          var dt = h.b0.top - h.b1.top;
+          var sw = h.b0.width / h.b1.width;
+          var sh = h.b0.height / h.b1.height;
+
+          // h.scaley = h.h0.hasAttribute('scaley');
+          // if (!h.scaley && (sw !== 1 || sh !== 1)) {
+          //   sw = sh = 1;
+          //   h.h1.style.width = h.b0.width + 'px';
+          //   h.h1.style.height = h.b0.height + 'px';
+          // }
+
+          // Also animate the border-radius for the circle-to-square transition
+          if (h.r0 !== h.r1) {
+            h.h1.style.borderRadius = h.r0;
+          }
+
+          h.h1.style.webkitTransform = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
+          h.h1.style.webkitTransformOrigin = '0 0';
+
+          scope._heroes.push(h);
+        }
+      }
+
+    },
+
+    teardown: function(scope) {
+      scope._heroes.forEach(function(h) {
+        h.h1.style.webkitTransition = null;
+        h.h1.style.webkitTransform = null;
+      });
+      scope._heroes = [];
+    },
+
+    complete: function(scope) {
+      this.teardown(scope);
+      this.fire('core-hero-transitionend', null, scope);
+    },
+
+    // TODO(sorvell): worth promoting
+    listenOnce: function(node, event, fn, args) {
+      var self = this;
+      var listener = function() {
+        fn.apply(self, args);
+        node.removeEventListener(event, listener, false);
+      }
+      node.addEventListener(event, listener, false);
+    }
+
+  });
+</script>
+</polymer-element>
+
+<core-transition-hero id="core-transition-hero"></core-transition-hero>

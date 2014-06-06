@@ -94,19 +94,19 @@
       }
     </style>
 
-    <core-animated-pages selected="{{page}}" on-core-animated-pages-transition-end="{{complete}}" xheroDuration="60000">
+    <core-animated-pages selected="{{page}}" on-core-animated-pages-transition-end="{{complete}}">
 
       <section>
 
         <div class="chip-container" hero-p on-tap="{{transition}}">
 
-          <template repeat="{{items}}">
+          <template repeat="{{items as item}}">
 
-            <div class="chip">
-              <div class="chip-top" style="background:{{color}};"></div>
+            <div class="chip" hero-id="{{item.artist}}-{{item.album}}" hero?="{{selectedAlbum === item }}">
+              <div class="chip-top" style="background:{{item.color}};" hero-id="{{item.artist}}-{{item.album}}-art" hero?="{{selectedAlbum === item}}"></div>
               <div class="chip-bottom">
-                <div class="chip-album-title">{{album}}</div>
-                <div class="chip-artist">{{artist}}</div>
+                <div class="chip-album-title">{{item.album}}</div>
+                <div class="chip-artist">{{item.artist}}</div>
               </div>
             </div>
 
@@ -117,16 +117,16 @@
 
       <section id="details">
 
-        <div class="card" layout horizontal hero="{{selectedArtist}}-{{selectedAlbum}}" on-tap="{{transition}}">
-          <div class="card-left" style="background:{{selectedColor}};" hero="{{selectedArtist}}-{{selectedAlbum}}-art"></div>
+        <div class="card" layout horizontal hero-id="{{selectedAlbum.artist}}-{{selectedAlbum.album}}" hero on-tap="{{transition}}">
+          <div class="card-left" style="background:{{selectedAlbum.color}};" hero-id="{{selectedAlbum.artist}}-{{selectedAlbum.album}}-art" hero></div>
           <div class="card-right" flex>
             <div layout horizontal center>
               <div>
-                <div class="card-icon" style="background:{{selectedColor}};"></div>
+                <div class="card-icon" style="background:{{selectedAlbum.color}};"></div>
               </div>
               <div flex>
-                <div class="card-album-title">{{selectedAlbum}}</div>
-                <div class="card-album-artist">{{selectedArtist}}</div>
+                <div class="card-album-title">{{selectedAlbum.album}}</div>
+                <div class="card-album-artist">{{selectedAlbum.artist}}</div>
               </div>
             </div>
           </div>
@@ -150,33 +150,14 @@
         { artist: 'Tycho', album: 'Awake', color: '#dc3c84' }
       ],
 
-      selectedColor: '',
-      selectedArtist: '',
-      selectedAlbum: '',
+      selectedAlbum: null,
 
       transition: function(e) {
         if (this.page === 0) {
-          var item = e.target.templateInstance.model;
-
-          this.selectedColor = item.color;
-          this.selectedArtist = item.artist;
-          this.selectedAlbum = item.album;
-
-          this.hero = e.target.templateInstance.firstNode.nextElementSibling;
-          this.hero.setAttribute('hero', item.artist + '-' + item.album);
-          this.hero2 = this.hero.querySelector('.chip-top');
-          this.hero2.setAttribute('hero', item.artist + '-' + item.album + '-art');
-
+          this.selectedAlbum = e.target.templateInstance.model.item;
           this.page = 1;
         } else {
           this.page = 0;
-        }
-      },
-
-      complete: function() {
-        if (this.page === 0) {
-          this.hero.removeAttribute('hero');
-          this.hero2.removeAttribute('hero');
         }
       }
     });

@@ -3,6 +3,8 @@
 <link href="../core-style/core-style.html" rel="import">
 <link href="../core-transition/core-transition.html" rel="import">
 
+<link href="core-transition-hero.html" rel="import">
+
 <!--
 
 `core-animated-pages` selects one of its children "pages" to show and runs a transition
@@ -49,18 +51,6 @@ when switching between them. By default, children are cross faded with each othe
       visibility: visible;
       z-index: auto;
     }
-
-    /* Hide heroes that are not currently transitioning */
-    polyfill-next-selector { content: ':host > [animate] [hero]'; }
-    ::content > [animate] [hero] {
-      visibility: hidden;
-    }
-
-    polyfill-next-selector { content: ':host > .core-selected [hero]'; }
-    ::content > .core-selected[animate] [hero] {
-      visibility: visible;
-      z-index: 10000;
-    }
   </style>
 
   <template repeat="{{transitions}}">
@@ -76,8 +66,9 @@ when switching between them. By default, children are cross faded with each othe
   Polymer({
 
     eventDelegates: {
-      webkitTransitionEnd: 'transitionEnd',
-      transitionEnd: 'transitionEnd'
+      'core-hero-transitionend': 'transitionEnd',
+      'webkitTransitionEnd': 'transitionEnd',
+      'transitionEnd': 'transitionEnd'
     },
 
     publish: {
@@ -96,7 +87,6 @@ when switching between them. By default, children are cross faded with each othe
     transitions: [],
     defaultTransition: '',
 
-    heroes: [],
     transitioning: [],
 
     selected: 0,
@@ -127,7 +117,8 @@ when switching between them. By default, children are cross faded with each othe
         this.transitioning.push(dst);
       }
 
-      this.setupHeroTransition(src, dst);
+      var hero = this.getTransition('core-transition-hero');
+      hero.setup(src, dst, this);
 
       var transitions = [];
       var ts$ = src.querySelectorAll('[transition]');
@@ -147,26 +138,11 @@ when switching between them. By default, children are cross faded with each othe
       src.setAttribute('animate', '');
       dst.setAttribute('animate', '');
 
-      getComputedStyle(src).top;
+      getComputedStyle(dst).top;
 
-      var duration = this.heroDuration + 'ms';
-      var easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
-      var props = [
-        'border-radius',
-        'width',
-        'height',
-        '-webkit-transform'
-      ];
-
-      this.heroes.forEach(function(h) {
-        var wt = [];
-        props.forEach(function(p) {
-          wt.push(p + ' ' + duration + ' ' + easing);
-        });
-
-        h.h1.style.webkitTransition = wt.join(', ');
-        h.h1.style.borderRadius = h.r1;
-        h.h1.style.webkitTransform = 'none';
+      hero.go(this, {
+        duration: this.heroDuration,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
       });
 
       transitions.forEach(function(transition) {
@@ -185,85 +161,18 @@ when switching between them. By default, children are cross faded with each othe
       }
     },
 
-    setupHeroTransition: function(src, dst) {
-      this.heroes = [];
-
-      var h$ = src.querySelectorAll('[hero]');
-      for (var i=0, h0; h0=h$[i]; i++) {
-        var v = h0.getAttribute('hero');
-        var h1 = dst.querySelector('[hero="' + v + '"]');
-
-        if (v && h1) {
-          var c0 = getComputedStyle(h0);
-          var c1 = getComputedStyle(h1);
-          var h = {
-            h0: h0,
-            b0: h0.getBoundingClientRect(),
-            r0: c0.borderRadius,
-            h1: h1,
-            b1: h1.getBoundingClientRect(),
-            r1: c1.borderRadius
-          };
-
-          var dl = h.b0.left - h.b1.left;
-          var dt = h.b0.top - h.b1.top;
-          var sw = h.b0.width / h.b1.width;
-          var sh = h.b0.height / h.b1.height;
-
-          // move and scale/resize the dst element
-
-          // h.scaley = h.h0.hasAttribute('scaley');
-          // if (!h.scaley && (sw !== 1 || sh !== 1)) {
-          //   sw = sh = 1;
-          //   h.h1.style.width = h.b0.width + 'px';
-          //   h.h1.style.height = h.b0.height + 'px';
-          // }
-
-          // Also animate the border-radius for the circle-to-square transition
-          if (h.r0 !== h.r1) {
-            h.h1.style.borderRadius = h.r0;
-          }
-
-          console.log(h.h1, dl, dt, sw, sh);
-
-          h.h1.style.webkitTransform = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
-          h.h1.style.webkitTransformOrigin = '0 0';
-
-          // FIXME
-          // if (!h.h0.style.zIndex) {
-          //   h.h1.style.zIndex = 10000;
-          // } else {
-          //   h.h1.style.zIndex = h.h0.style.zIndex;
-          // }
-
-          this.heroes.push(h);
-        }
-      }
-    },
-
     complete: function() {
       this.transitioning.forEach(function(t) {
         t.removeAttribute('animate');
       });
       this.transitioning = [];
 
-      this.heroes.forEach(function(h) {
-        h.h1.style.webkitTransition = null;
-        h.h1.style.webkitTransform = null;
-        // h.h1.style.zIndex = null;
-        // if (!h.scaley) {
-        //   h.h1.style.width = h.b1.width + 'px';
-        //   h.h1.style.height = h.b1.height + 'px';
-        // }
-      });
-      this.heroes = [];
-
       this.fire('core-animated-pages-transition-end');
     },
     
     transitionEnd: function(e) {
       if (this.transitioning.length && this.selectedItem.contains(e.target) &&
-          (e.propertyName === '-webkit-transform' || this.heroes.length === 0)) {
+          (e.propertyName === '-webkit-transform' || this._heroes.length === 0)) {
         this.job('transitionWatch', function() {
           this.complete();
         }, 500);
