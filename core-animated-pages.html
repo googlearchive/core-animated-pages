@@ -1,24 +1,17 @@
 <link href="../polymer/polymer.html" rel="import">
 <link href="../core-selector/core-selector.html" rel="import">
-<link href="../core-style/core-style.html" rel="import">
 <link href="../core-transition/core-transition.html" rel="import">
 
-<link href="core-transition-hero.html" rel="import">
+<link href="hero-transition.html" rel="import">
+<link href="cross-fade.html" rel="import">
 
 <!--
 
 `core-animated-pages` selects one of its children "pages" to show and runs a transition
-when switching between them. By default, children are cross faded with each other.
-
-  * The hero element must not be the top-level container of the page.
-
-  * The parent elements of the hero should also be marked "hero"
-
-  * The hero element's children will fade during the transition, unless the child is
-    also a hero.
+when switching between them.
 
 -->
-<polymer-element name="core-animated-pages" extends="core-selector" notap attributes="heroDuration transitions defaultTransition">
+<polymer-element name="core-animated-pages" extends="core-selector" notap attributes="transitions">
 
 <template>
 
@@ -53,10 +46,6 @@ when switching between them. By default, children are cross faded with each othe
     }
   </style>
 
-  <template repeat="{{transitions}}">
-    <core-style ref="{{}}"></core-style>
-  </template>
-
   <shadow></shadow>
 
 </template>
@@ -66,28 +55,10 @@ when switching between them. By default, children are cross faded with each othe
   Polymer({
 
     eventDelegates: {
-      'core-hero-transitionend': 'transitionEnd',
+      'core-transitionend': 'transitionEnd',
       'webkitTransitionEnd': 'transitionEnd',
       'transitionEnd': 'transitionEnd'
     },
-
-    publish: {
-
-      /**
-       * The duration of the hero transition in milliseconds.
-       *
-       * @attribute heroDuration
-       * @type number
-       * @default 1000
-       */
-      heroDuration: { value: 1000, reflect: true }
-
-    },
-
-    transitions: [],
-    defaultTransition: '',
-
-    transitioning: [],
 
     selected: 0,
 
@@ -95,14 +66,33 @@ when switching between them. By default, children are cross faded with each othe
       this.meta = document.createElement('core-transition');
     },
 
-    defaultTransitionChanged: function(old) {
+    created: function() {
+      this.transitions = [];
+      this.transitioning = [];
+    },
+
+    ready: function() {
+      this.super(arguments);
+    },
+
+    transitionsChanged: function(old) {
       if (old) {
-        this.classList.remove(old);
+        old.forEach(function(transitionId) {
+          var t = this.getTransition(transitionId);
+          if (t) {
+            t.teardown(this);
+          }
+        }.bind(this));
       }
-      if (this.defaultTransition) {
-        this.classList.add(this.defaultTransition);
+
+      if (this.transitions) {
+        this.transitions.forEach(function(transitionId) {
+          var t = this.getTransition(transitionId);
+          if (t) {
+            t.install(this);
+          }
+        }.bind(this));
       }
-      console.log(old + ' -> ' + this.defaultTransition);
     },
 
     getTransition: function(transitionId) {
@@ -117,48 +107,27 @@ when switching between them. By default, children are cross faded with each othe
         this.transitioning.push(dst);
       }
 
-      var hero = this.getTransition('core-transition-hero');
-      hero.setup(src, dst, this);
-
       var transitions = [];
-      var ts$ = src.querySelectorAll('[transition]');
-      for (var i = 0, el; el=ts$[i]; i++) {
-        this.setupTransition(transitions, ts);
-      }
 
-      var td$ = dst.querySelectorAll('[transition]');
-      for (var i = 0, el; el=td$[i]; i++) {
-        this.setupTransition(transitions, ts);
-      }
-
-      transitions.forEach(function(transition) {
-        transition.t.setup(transition.t.el, transition.t.args)
-      });
+      this.transitions.forEach(function(transitionId) {
+        var t = this.getTransition(transitionId);
+        if (t) {
+          t.setup(src, dst, this);
+          transitions.push(t);
+        }
+      }.bind(this));
 
       src.setAttribute('animate', '');
       dst.setAttribute('animate', '');
 
       getComputedStyle(dst).top;
 
-      hero.go(this, {
-        duration: this.heroDuration,
-        easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-      });
-
       transitions.forEach(function(transition) {
-        transition.t.go(transition.t.el, transition.t.args);
-      });
-    },
-
-    setupTransition: function(transitions, el) {
-      var t = el.getAttribute('transition');
-      var tt = this.getTransition(t);
-      if (tt) {
-        transitions.push({
-          t: tt,
-          el: el
+        transition.go(this, {
+          duration: 1000,
+          easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
         });
-      }
+      }.bind(this));
     },
 
     complete: function() {
@@ -172,7 +141,7 @@ when switching between them. By default, children are cross faded with each othe
     
     transitionEnd: function(e) {
       if (this.transitioning.length && this.selectedItem.contains(e.target) &&
-          (e.propertyName === '-webkit-transform' || this._heroes.length === 0)) {
+          e.propertyName === '-webkit-transform') {
         this.job('transitionWatch', function() {
           this.complete();
         }, 500);

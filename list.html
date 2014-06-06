@@ -36,17 +36,17 @@
 
     <p>Tap to move to top</p>
 
-    <core-animated-pages id="pages" on-tap="{{reorder}}" selected="{{selected}}" on-core-animated-pages-transition-end="{{done}}">
+    <core-animated-pages id="pages" on-tap="{{reorder}}" selected="{{selected}}" on-core-animated-pages-transition-end="{{done}}" transitions='["hero-transition"]'>
 
       <section>
         <template repeat="{{items}}">
-          <div hero="{{h}}" class="item">{{v}}</div>
+          <div hero-id="{{h}}" hero class="item">{{v}}</div>
         </template>
       </section>
 
       <section>
         <template repeat="{{items2}}">
-          <div hero="{{h}}" class="item">{{v}}</div>
+          <div hero-id="{{h}}" hero class="item">{{v}}</div>
         </template>
       </section>
 
@@ -79,7 +79,7 @@
       ],
 
       reorder: function(e) {
-        if (this.$.pages.transitioning) {
+        if (this.$.pages.transitioning.length) {
           return;
         }
 

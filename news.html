@@ -12,7 +12,6 @@
   <link href="../paper-shadow/paper-shadow.html" rel="import">
 
   <link href="core-animated-pages.html" rel="import">
-  <link href="cross-fade.html" rel="import">
 
   <style>
     body {
@@ -142,9 +141,19 @@
 </head>
 <body unresolved>
 
-  <paper-shadow></paper-shadow>
+  <polymer-element name="shadow-div" noscript>
+    <template>
+      <style>
+        :host {
+          display: block;
+        }
+      </style>
+      <paper-shadow target="{{}}" z="1"></paper-shadow>
+      <content></content>
+    </template>
+  </polymer-element>
 
-  <core-animated-pages class="fit" selected="1" defaultTransition="cross-fade" transitions='["cross-fade"]'>
+  <core-animated-pages class="fit" selected="0" transitions='["cross-fade-all","hero-transition"]'>
 
     <section id="first">
 
@@ -158,38 +167,26 @@
 
       <div class="container" hero-p>
 
-        <div class="card paper-shadow-top paper-shadow-top-z-1" hero-p onclick="stuff()">
-          <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
+        <shadow-div class="card" hero-p onclick="stuff()">
           <div class="card-top"></div>
           <div class="card-bottom" hero-p>
             <div class="headline">Google's Craziest Offices</div>
             <div class="source-container" hero-p layout horizontal center>
-              <div class="icon" hero="icon-header" scaley></div>
+              <div class="icon" hero-id="icon-header" hero></div>
               <div class="two-lines">
                 <div class="source">The New York Times</div>
                 <div class="time">36 minutes ago</div>
               </div>
             </div>
           </div>
-        </div>
+        </shadow-div>
 
         <div class="tiles-container" layout horizontal justified>
 
-          <div class="tile paper-shadow-top paper-shadow-top-z-1">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
-
-          <div class="tile paper-shadow-top paper-shadow-top-z-1">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
-
-          <div class="tile paper-shadow-top paper-shadow-top-z-1">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
-
-          <div class="tile paper-shadow-top paper-shadow-top-z-1">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
+          <shadow-div class="tile"></shadow-div>
+          <shadow-div class="tile"></shadow-div>
+          <shadow-div class="tile"></shadow-div>
+          <shadow-div class="tile"></shadow-div>
 
         </div>
 
@@ -199,18 +196,16 @@
 
     <section id="second">
 
-      <!-- parent of the hero needs to have 'hero' attribute also -->
-      <core-toolbar class="tall" hero>
+      <core-toolbar class="tall" hero-p>
 
-        <core-toolbar class="tall toolbar-2" hero="icon-header" scaley>
-          <div flex class="middle" hero>T</div>
+        <core-toolbar class="tall toolbar-2" hero-id="icon-header" hero>
+          <div flex class="middle">T</div>
         </core-toolbar>
       </core-toolbar>
 
       <div class="container">
 
-        <div class="card paper-shadow-top paper-shadow-top-z-1" xphase="card-transition-rotate-up" onclick="stuff()">
-          <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
+        <shadow-div class="card" onclick="stuff()">
           <div class="card-top-2"></div>
           <div class="card-bottom">
             <div class="headline">Some long overflowing headline</div>
@@ -222,25 +217,14 @@
               </div>
             </div>
           </div>
-        </div>
+        </shadow-div>
 
         <div class="tiles-container" layout horizontal justified>
 
-          <div class="tile paper-shadow-top paper-shadow-top-z-1" xphase="card-transition-rotate-up" delay="0.05">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
-
-          <div class="tile paper-shadow-top paper-shadow-top-z-1" xphase="card-transition-rotate-up" delay="0.1">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
-
-          <div class="tile paper-shadow-top paper-shadow-top-z-1" xphase="card-transition-rotate-up" delay="0.15">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
-
-          <div class="tile paper-shadow-top paper-shadow-top-z-1" xphase="card-transition-rotate-up" delay="0.2">
-            <div class="paper-shadow-bottom paper-shadow-bottom-z-1"></div>
-          </div>
+          <shadow-div class="tile"></shadow-div>
+          <shadow-div class="tile"></shadow-div>
+          <shadow-div class="tile"></shadow-div>
+          <shadow-div class="tile"></shadow-div>
 
         </div>
 

@@ -8,24 +8,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link href="../polymer/polymer.html" rel="import">
-<link href="../core-style/core-style.html" rel="import">
+<link href="core-transition-pages.html" rel="import">
 
-<core-style id="slide-from-right">
-  :host(.slide-from-right) ::content > * {
-    -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+<polymer-element name="slide-from-right" extends="core-transition-pages" rel="import">
+<template>
+  <style>
+    :host(.slide-from-right) ::content > * {
+      -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  :host(.slide-from-right) ::content > .core-selected ~ *:not(.core-selected) {
-    -webkit-transform: translateX(100%);
-  }
+    :host(.slide-from-right) ::content > .core-selected ~ *:not(.core-selected) {
+      -webkit-transform: translateX(100%);
+    }
 
-  :host(.slide-from-right) ::content > *:not(.core-selected) {
-    -webkit-transform: translateX(-100%);
-  }
+    :host(.slide-from-right) ::content > *:not(.core-selected) {
+      -webkit-transform: translateX(-100%);
+    }
 
-  polyfill-next-selector { content: ':host > .core-selected'; }
-  :host(.slide-from_right) ::content > .core-selected {
-    -webkit-transform: none;
-  }
-</core-style>
+    polyfill-next-selector { content: ':host > .core-selected'; }
+    :host(.slide-from-right) ::content > .core-selected {
+      -webkit-transform: none;
+    }
+  </style>
+</template>
+<script>
+
+  Polymer({
+
+    install: function(scope) {
+      this.super(arguments);
+      scope.classList.add('slide-from-right');
+    },
+
+    teardown: function(scope) {
+      scope.classList.remove('slide-from-right');
+    }
+
+  });
+
+</script>
+</polymer-element>
+
+<slide-from-right id="slide-from-right"></slide-from-right>

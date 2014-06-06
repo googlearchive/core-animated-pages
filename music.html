@@ -39,6 +39,7 @@
 
       .chip {
         display: inline-block;
+        position: relative;
         border-radius: 3px;
         margin: 4px;
         overflow: hidden;
@@ -94,7 +95,7 @@
       }
     </style>
 
-    <core-animated-pages selected="{{page}}" on-core-animated-pages-transition-end="{{complete}}">
+    <core-animated-pages selected="{{page}}" transitions='["hero-transition"]' on-core-animated-pages-transition-end="{{complete}}">
 
       <section>
 

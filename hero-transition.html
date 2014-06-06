@@ -7,24 +7,16 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link rel="import" href="../core-transition/core-transition.html">
+<link href="../polymer/polymer.html" rel="import">
+<link href="core-transition-pages.html" rel="import">
 
-<polymer-element name="core-transition-hero" extends="core-transition">
+<polymer-element name="hero-transition" extends="core-transition-pages">
 <template>
-  <link no-shim href="core-transition-hero.css" rel="stylesheet">
+  <link no-shim href="hero-transition.css" rel="stylesheet">
 </template>
 <script>
-  Polymer('core-transition-hero', {
+  Polymer({
 
-    registerCallback: function(element) {
-      this.transitionStyle = element.templateContent().firstElementChild;
-    },
-
-    // template is just for loading styles, we don't need a shadowRoot
-    fetchTemplate: function() {
-      return null;
-    },
-    
     go: function(scope, timing) {
       var props = [
         'border-radius',
@@ -48,15 +40,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     setup: function(src, dst, scope) {
-      // Install styles
-      if (!scope._hasHeroTransitionStyle) {
-        if (!scope.shadowRoot) {
-          scope.createShadowRoot().innerHTML = '<content></content>';
-        }
-        this.installScopeStyle(this.transitionStyle, 'transition', scope.shadowRoot);
-        scope._hasHeroTransitionStyle = true;
-      }
-
       if (scope._heroes && scope._heroes.length) {
         this.teardown(scope);
       } else {
@@ -118,11 +101,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     complete: function(scope) {
       this.teardown(scope);
-      this.fire('core-hero-transitionend', null, scope);
+      this.fire('core-transitionend', this, scope);
     }
 
   });
 </script>
 </polymer-element>
 
-<core-transition-hero id="core-transition-hero"></core-transition-hero>
+<hero-transition id="hero-transition"></hero-transition>

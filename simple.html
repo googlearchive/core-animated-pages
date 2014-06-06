@@ -33,11 +33,11 @@
 </head>
 <body unresolved>
   <select onchange="change();">
-    <option value="cross-fade" selected>cross-fade</option>
+    <option value="cross-fade-all" selected>cross-fade-all</option>
     <option value="slide-from-right">slide-from-right</option>
   </select>
 
-  <core-animated-pages onclick="stuff();" transitions='["cross-fade","slide-from-right"]' defaultTransition="cross-fade">
+  <core-animated-pages onclick="stuff();" transitions='["cross-fade-all"]'>
     <section>
       <div layout vertical center center-justified style="background:red;">
         <div>1</div>
@@ -69,7 +69,7 @@
     function change() {
       var s = document.querySelector('select');
       var transition = s.options[s.selectedIndex].value;
-      document.querySelector('core-animated-pages').defaultTransition = transition;
+      document.querySelector('core-animated-pages').transitions = [transition];
     }
 
     var up = true;
