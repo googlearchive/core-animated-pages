@@ -25,7 +25,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '-webkit-transform'
       ];
 
-      this.listenOnce(scope, 'webkitTransitionEnd', this.complete.bind(this, scope));
+      this.boundCompleteFn = this.complete.bind(this, scope);
+      scope.addEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
 
       scope._heroes.forEach(function(h) {
         var wt = [];
@@ -97,11 +98,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         h.h1.style.webkitTransform = null;
       });
       scope._heroes = [];
+      scope.removeEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
     },
 
-    complete: function(scope) {
-      this.teardown(scope);
-      this.fire('core-transitionend', this, scope);
+    complete: function(scope, e) {
+      if (e.propertyName === '-webkit-transform' && e.elapsedTime > 1) {
+        this.teardown(scope);
+        this.fire('core-transitionend', this, scope);
+      }
     }
 
   });

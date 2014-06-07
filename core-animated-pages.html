@@ -140,8 +140,7 @@ when switching between them.
     },
     
     transitionEnd: function(e) {
-      if (this.transitioning.length && this.selectedItem.contains(e.target) &&
-          e.propertyName === '-webkit-transform') {
+      if (this.transitioning.length && this.selectedItem.contains(e.target)) {
         this.job('transitionWatch', function() {
           this.complete();
         }, 500);
