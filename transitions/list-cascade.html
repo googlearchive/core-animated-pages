@@ -9,43 +9,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link href="core-transition-pages.html" rel="import">
 
-<polymer-element name="list-cascade" extends="core-transition-pages" rel="import" noscript>
-<template>
-  <style>
-    ::content > * [list-cascade] * {
-      -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1800ms cubic-bezier(0.4, 0, 0.2, 1);
-      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1800ms cubic-bezier(0.4, 0, 0.2, 1);
-    }
 
-    ::content > *:not(.core-selected) [list-cascade] * {
-      -webkit-transform: translateY(200%);
-      transform: translateY(200%);
-      opacity: 0.2;
-    }
+<core-style id="list-cascade">
+  ::content > * [list-cascade] * {
+    -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1800ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1800ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    polyfill-next-selector { content: ':host > .core-selected [list-cascade] *'; }
-    ::content > .core-selected [list-cascade] * {
-      -webkit-transform: none;
-      transform: none;
-    }
+  ::content > *:not(.core-selected) [list-cascade] * {
+    -webkit-transform: translateY(200%);
+    transform: translateY(200%);
+    opacity: 0.2;
+  }
 
-    ::content > .core-selected [list-cascade] *:nth-child(2) {
-      -webkit-transition-delay: 0.2s;
-    }
+  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *'; }
+  ::content > .core-selected [list-cascade] * {
+    -webkit-transform: none;
+    transform: none;
+  }
 
-    ::content > .core-selected [list-cascade] *:nth-child(3) {
-      -webkit-transition-delay: 0.4s;
-    }
+  ::content > .core-selected [list-cascade] *:nth-child(2) {
+    -webkit-transition-delay: 0.2s;
+  }
 
-    ::content > .core-selected [list-cascade] *:nth-child(4) {
-      -webkit-transition-delay: 0.6s;
-    }
-    
-    ::content > .core-selected [list-cascade] *:nth-child(5) {
-      -webkit-transition-delay: 0.8s;
-    }
-  </style>
-</template>
-</polymer-element>
+  ::content > .core-selected [list-cascade] *:nth-child(3) {
+    -webkit-transition-delay: 0.4s;
+  }
 
-<list-cascade id="list-cascade"></list-cascade>
+  ::content > .core-selected [list-cascade] *:nth-child(4) {
+    -webkit-transition-delay: 0.6s;
+  }
+  
+  ::content > .core-selected [list-cascade] *:nth-child(5) {
+    -webkit-transition-delay: 0.8s;
+  }
+</core-style>
+
+<core-transition-pages id="list-cascade"></core-transition-pages>

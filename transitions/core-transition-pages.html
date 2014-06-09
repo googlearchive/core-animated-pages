@@ -8,38 +8,63 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link href="../../polymer/polymer.html" rel="import">
+<link href="../../core-style/core-style.html" rel="import">
 <link href="../../core-transition/core-transition.html" rel="import">
 
 <polymer-element name="core-transition-pages" extends="core-transition">
 <script>
 
-  Polymer({
+(function () {
 
-    registerCallback: function(element) {
-      if (element.templateContent()) {
-        this.transitionStyle = element.templateContent().firstElementChild;
-      }
-    },
+// create some basic transition styling data.
+var transitions = CoreStyle.g.transitions = CoreStyle.g.transitions || {};
+transitions.duration = '500ms';
 
-    // template is just for loading styles, we don't need a shadowRoot
-    fetchTemplate: function() {
-      return null;
-    },
+Polymer({
 
-    setup: function(src, dst, scope) {
-      if (!scope._pageTransitionStyles) {
-        scope._pageTransitionStyles = {};
-      }
-      
-      if (!scope._pageTransitionStyles[this.tagName]) {
-        if (!scope.shadowRoot) {
-          scope.createShadowRoot().innerHTML = '<content></content>';
-        }
-        this.installScopeStyle(this.transitionStyle, 'transition', scope.shadowRoot);
-        scope._pageTransitionStyles[this.tagName] = true;
-      }
+  publish: {
+    scopeClass: ''
+  },
+
+  setup: function(src, dst, scope) {
+    if (!scope._pageTransitionStyles) {
+      scope._pageTransitionStyles = {};
     }
-  });
+
+    var name = this.calcStyleName();
+    
+    if (!scope._pageTransitionStyles[name]) {
+      this.installStyleInScope(scope, name);
+      scope._pageTransitionStyles[name] = true;
+    }
+    if (this.scopeClass) {
+      scope.classList.add(this.scopeClass);
+    }
+  },
+
+  calcStyleName: function() {
+    return this.id || this.localName;
+  },
+
+  installStyleInScope: function(scope, id) {
+    if (!scope.shadowRoot) {
+      scope.createShadowRoot().innerHTML = '<content></content>';
+    }
+    var root = scope.shadowRoot;
+    var scopeStyle = document.createElement('core-style');
+    root.insertBefore(scopeStyle, root.firstChild);
+    scopeStyle.applyRef(id);
+  },
+
+  teardown: function(scope) {
+    if (this.scopeClass) {
+      scope.classList.remove(this.scopeClass);
+    }
+  }
+
+});
+
+})();
 
 </script>
 </polymer-element>

@@ -9,10 +9,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link href="core-transition-pages.html" rel="import">
 
+<core-style id="hero-transition">
+  /* Hide heroes that are not currently transitioning */
+  polyfill-next-selector { content: ':host > [animate] [hero]'; }
+  ::content > [animate] [hero], ::content > [animate]::shadow [hero] {
+    visibility: hidden;
+  }
+
+  polyfill-next-selector { content: ':host > .core-selected [hero]'; }
+  ::content > .core-selected[animate] [hero],
+  ::content > .core-selected[animate]::shadow [hero] {
+    visibility: visible;
+    z-index: 10000;
+  }
+</core-style>
+
+
 <polymer-element name="hero-transition" extends="core-transition-pages">
-<template>
-  <link no-shim href="hero-transition.css" rel="stylesheet">
-</template>
 <script>
   Polymer({
 
@@ -27,10 +40,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.boundCompleteFn = this.complete.bind(this, scope);
       scope.addEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
 
+      var duration = timing && timing.duration || 
+          (CoreStyle.g.transitions.heroDuration || 
+          CoreStyle.g.transitions.duration);
+
       scope._heroes.forEach(function(h) {
         var wt = [];
         props.forEach(function(p) {
-          wt.push(p + ' ' + timing.duration + 'ms ' + timing.easing);
+          wt.push(p + ' ' + duration + ' ' + timing.easing);
         });
 
         h.h1.style.webkitTransition = wt.join(', ');

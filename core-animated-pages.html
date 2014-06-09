@@ -1,4 +1,3 @@
-<link href="../polymer/polymer.html" rel="import">
 <link href="../core-selector/core-selector.html" rel="import">
 
 <link href="transitions/hero-transition.html" rel="import">
@@ -40,10 +39,6 @@ when switching between them.
     created: function() {
       this._transitions = [];
       this.transitioning = [];
-    },
-
-    ready: function() {
-      this.super(arguments);
     },
 
     transitionsChanged: function() {
@@ -98,7 +93,6 @@ when switching between them.
 
       transitions.forEach(function(transition) {
         transition.go(this, {
-          duration: 1000,
           easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
         });
       }.bind(this));

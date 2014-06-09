@@ -9,26 +9,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link href="core-transition-pages.html" rel="import">
 
-<polymer-element name="slide-up" extends="core-transition-pages" rel="import" noscript>
-<template>
-  <style>
-    ::content > * [slide-up] {
-      -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-      transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+<core-style id="slide-up">
+  ::content > * [slide-up] {
+    -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
 
-    ::content > *:not(.core-selected) [slide-up] {
-      -webkit-transform: translateY(100%);
-      transform: translateY(100%);
-    }
+  ::content > *:not(.core-selected) [slide-up] {
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
+  }
 
-    polyfill-next-selector { content: ':host > .core-selected [slide-up]'; }
-    ::content > .core-selected [slide-up] {
-      -webkit-transform: none;
-      transform: none;
-    }
-  </style>
-</template>
-</polymer-element>
+  polyfill-next-selector { content: ':host > .core-selected [slide-up]'; }
+  ::content > .core-selected [slide-up] {
+    -webkit-transform: none;
+    transform: none;
+  }
+</core-style>
 
-<slide-up id="slide-up"></slide-up>
+<core-transition-pages id="slide-up"></core-transition-pages>
