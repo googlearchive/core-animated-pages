@@ -151,7 +151,11 @@ when switching between them.
       this.super(arguments);
 
       if (oldItem && this.selectedItem) {
-        this.applyTransition(oldItem, this.selectedItem);
+        // TODO(sorvell): allow bindings to update first?
+        var self = this;
+        Platform.endOfMicrotask(function() {
+          self.applyTransition(oldItem, self.selectedItem);
+        });
       }
     }
 
