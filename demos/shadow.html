@@ -63,7 +63,7 @@
       </style>
       <div id="container" on-tap="{{selectView}}" flex horizontal wrap around-justified layout hero-p>
         <template repeat="{{item in items}}">
-          <div class="card" vertical center center-justified layout hero-id="item-{{item}}" hero?="{{selected === item + 1 || lastSelected === item + 1}}"><span>{{item}}</span></div>
+          <div class="card" vertical center center-justified layout hero-id="item-{{item}}" hero?="{{selected === item + 1 || lastSelected === item + 1}}"><span cross-fade>{{item}}</span></div>
         </template>
       </div>
     </template>
@@ -82,7 +82,7 @@
     </script>
   </polymer-element>
 
-  <polymer-element name="grid-item" attributes="item isSelected">
+  <polymer-element name="grid-item" attributes="item isHero">
     <template>
       <style>
         .view {
@@ -90,8 +90,8 @@
           background-color: tomato;
         }
       </style>
-      <div class="view" flex vertical center center-justified layout hero-id="item-{{item}}" hero?="{{isSelected}}">
-        <span>{{item}}</span>
+      <div class="view" flex vertical center center-justified layout hero-id="item-{{item}}" hero?="{{isHero}}">
+        <span cross-fade>{{item}}</span>
       </div>
     </template>
     <script>
@@ -113,7 +113,7 @@
       <grid-toc vertical id="toc" layout selected="{{$.pages.selected}}" items="{{items}}" hero-p on-grid-toc-select="{{selectView}}"></grid-toc>
 
       <template repeat="{{item in items}}">
-        <grid-item vertical layout item="{{item}}" hero-p isSelected?="{{$.pages.selected === 0}}"></grid-item>
+        <grid-item vertical layout item="{{item}}" hero-p isHero="{{$.pages.selected === 0}}"></grid-item>
       </template>
 
     </core-animated-pages>
@@ -137,7 +137,6 @@
 
       scope.back = function() {
         this.lastSelected = this.$.pages.selected;
-        console.log(this.lastSelected);
         this.$.pages.selected = 0;
       }
 
