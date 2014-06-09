@@ -12,8 +12,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <core-style id="list-cascade">
   ::content > * [list-cascade] * {
-    -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1800ms cubic-bezier(0.4, 0, 0.2, 1);
-    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity 1800ms cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   ::content > *:not(.core-selected) [list-cascade] * {
@@ -29,19 +29,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 
   ::content > .core-selected [list-cascade] *:nth-child(2) {
-    -webkit-transition-delay: 0.2s;
+    -webkit-transition-delay: 0.1s;
   }
 
   ::content > .core-selected [list-cascade] *:nth-child(3) {
-    -webkit-transition-delay: 0.4s;
+    -webkit-transition-delay: 0.2s;
   }
 
   ::content > .core-selected [list-cascade] *:nth-child(4) {
-    -webkit-transition-delay: 0.6s;
+    -webkit-transition-delay: 0.3s;
   }
   
   ::content > .core-selected [list-cascade] *:nth-child(5) {
-    -webkit-transition-delay: 0.8s;
+    -webkit-transition-delay: 0.4s;
   }
 </core-style>
 
