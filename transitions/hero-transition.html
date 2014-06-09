@@ -40,6 +40,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     setup: function(src, dst, scope) {
+      this.super(arguments);
+
       if (scope._heroes && scope._heroes.length) {
         this.teardown(scope);
       } else {

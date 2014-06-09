@@ -78,6 +78,9 @@ when switching between them.
         this.transitioning.push(dst);
       }
 
+      src.setAttribute('animate', '');
+      dst.setAttribute('animate', '');
+
       var transitions = [];
 
       this._transitions.forEach(function(transitionId) {
@@ -87,9 +90,6 @@ when switching between them.
           transitions.push(t);
         }
       }.bind(this));
-
-      src.setAttribute('animate', '');
-      dst.setAttribute('animate', '');
 
       getComputedStyle(src).top;
 
