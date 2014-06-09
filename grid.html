@@ -54,7 +54,7 @@
 
         <div id="container" flex horizontal wrap around-justified layout hero-p>
           <template repeat="{{item in items}}">
-            <div class="card" vertical center center-justified layout hero-id="item-{{item}}" hero?="{{$.pages.selected === item + 1 || lastSelected === item + 1}}" on-tap="{{selectView}}">{{item}}</div>
+            <div class="card" vertical center center-justified layout hero-id="item-{{item}}" hero?="{{$.pages.selected === item + 1 || lastSelected === item + 1}}" on-tap="{{selectView}}"><span cross-fade>{{item}}</span></div>
           </template>
         </div>
 
@@ -62,7 +62,7 @@
 
       <template repeat="{{item in items}}">
         <section vertical layout>
-          <div class="view" flex vertical center center-justified layout hero-id="item-{{item}}" hero?="{{$.pages.selected === 0}}">{{item}}</div>
+          <div class="view" flex vertical center center-justified layout hero-id="item-{{item}}" hero?="{{$.pages.selected === 0}}"><span cross-fade>{{item}}</span></div>
         </section>
       </template>
 
