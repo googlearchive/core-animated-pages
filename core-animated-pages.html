@@ -66,7 +66,7 @@ when switching between them.
     },
 
     created: function() {
-      this.transitions = [];
+      this._transitions = [];
       this.transitioning = [];
     },
 
@@ -74,7 +74,11 @@ when switching between them.
       this.super(arguments);
     },
 
-    transitionsChanged: function(old) {
+    transitionsChanged: function() {
+      this._transitions = this.transitions.split(',');
+    },
+
+    _transitionsChanged: function(old) {
       if (old) {
         old.forEach(function(transitionId) {
           var t = this.getTransition(transitionId);
@@ -84,8 +88,8 @@ when switching between them.
         }.bind(this));
       }
 
-      if (this.transitions) {
-        this.transitions.forEach(function(transitionId) {
+      if (this._transitions) {
+        this._transitions.forEach(function(transitionId) {
           var t = this.getTransition(transitionId);
           if (t) {
             t.install(this);
@@ -108,7 +112,7 @@ when switching between them.
 
       var transitions = [];
 
-      this.transitions.forEach(function(transitionId) {
+      this._transitions.forEach(function(transitionId) {
         var t = this.getTransition(transitionId);
         if (t) {
           t.setup(src, dst, this);

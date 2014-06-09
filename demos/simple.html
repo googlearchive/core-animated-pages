@@ -37,7 +37,7 @@
     <option value="slide-from-right">slide-from-right</option>
   </select>
 
-  <core-animated-pages onclick="stuff();" transitions='["cross-fade-all"]'>
+  <core-animated-pages onclick="stuff();" transitions="cross-fade-all">
     <section>
       <div layout vertical center center-justified style="background:red;">
         <div>1</div>
@@ -68,8 +68,7 @@
   <script>
     function change() {
       var s = document.querySelector('select');
-      var transition = s.options[s.selectedIndex].value;
-      document.querySelector('core-animated-pages').transitions = [transition];
+      document.querySelector('core-animated-pages').transitions = document.querySelector('select').options[s.selectedIndex].value;
     }
 
     var up = true;
