@@ -23,7 +23,14 @@ transitions.duration = '500ms';
 Polymer({
 
   publish: {
-    scopeClass: ''
+    scopeClass: '',
+    activeClass: ''
+  },
+
+  go: function(scope) {
+    if (this.activeClass) {
+      scope.classList.add(this.activeClass);
+    }
   },
 
   setup: function(src, dst, scope) {
@@ -59,6 +66,9 @@ Polymer({
   teardown: function(scope) {
     if (this.scopeClass) {
       scope.classList.remove(this.scopeClass);
+    }
+    if (this.activeClass) {
+      scope.classList.remove(this.activeClass);
     }
   }
 
