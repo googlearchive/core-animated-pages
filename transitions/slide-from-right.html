@@ -35,7 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   Polymer({
 
-    install: function(scope) {
+    setup: function(src, dst, scope) {
       this.super(arguments);
       scope.classList.add('slide-from-right');
     },

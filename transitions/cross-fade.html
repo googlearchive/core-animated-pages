@@ -45,8 +45,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     polyfill-next-selector { content: ':host(.cross-fade-all) > .core-selected *:not([hero])'; }
-    .host(.cross-fade-all) ::content > .core-selected *,
-    .host(.cross-fade-all) ::content > .core-selected::shadow * {
+    :host(.cross-fade-all) ::content > .core-selected *,
+    :host(.cross-fade-all) ::content > .core-selected::shadow * {
       opacity: 1;
     }
 
@@ -72,7 +72,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     all: false,
 
-    install: function(scope) {
+    setup: function(src, dst, scope) {
       this.super(arguments);
 
       if (this.all) {

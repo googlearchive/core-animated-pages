@@ -14,36 +14,7 @@ when switching between them.
 
 <template>
 
-  <style>
-    :host {
-      display: block;
-      position: relative;
-    }
-
-    polyfill-next-selector { content: ':host > *'; }
-    ::content > * {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      left: 0;
-      visibility: hidden;
-      z-index: -1000;
-    }
-
-    polyfill-next-selector { content: ':host > .core-selected'; }
-    ::content > .core-selected {
-      visibility: visible;
-      z-index: auto;
-    }
-
-    /* Both pages being animated must be visible */
-    polyfill-next-selector { content: ':host > [animate]'; }
-    ::content > [animate] {
-      visibility: visible;
-      z-index: auto;
-    }
-  </style>
+  <link href="core-animated-pages.css" rel="stylesheet">
 
   <shadow></shadow>
 
@@ -60,6 +31,7 @@ when switching between them.
     },
 
     selected: 0,
+    lastSelectedItem: null,
 
     registerCallback: function() {
       this.meta = document.createElement('core-transition');
@@ -80,19 +52,10 @@ when switching between them.
 
     _transitionsChanged: function(old) {
       if (old) {
-        old.forEach(function(transitionId) {
-          var t = this.getTransition(transitionId);
+        old.forEach(function(oldId) {
+          var t = this.getTransition(oldId);
           if (t) {
             t.teardown(this);
-          }
-        }.bind(this));
-      }
-
-      if (this._transitions) {
-        this._transitions.forEach(function(transitionId) {
-          var t = this.getTransition(transitionId);
-          if (t) {
-            t.install(this);
           }
         }.bind(this));
       }
@@ -100,6 +63,11 @@ when switching between them.
 
     getTransition: function(transitionId) {
       return this.meta.byId(transitionId);
+    },
+
+    selectionSelect: function(e, detail) {
+      this.updateSelectedItem();
+      // Wait to call applySelection when we run the transition
     },
 
     applyTransition: function(src, dst) {
@@ -123,7 +91,10 @@ when switching between them.
       src.setAttribute('animate', '');
       dst.setAttribute('animate', '');
 
-      getComputedStyle(dst).top;
+      getComputedStyle(src).top;
+
+      this.applySelection(src, false);
+      this.applySelection(dst, true);
 
       transitions.forEach(function(transition) {
         transition.go(this, {
@@ -152,6 +123,10 @@ when switching between them.
 
     selectedItemChanged: function(oldItem) {
       this.super(arguments);
+
+      if (!oldItem) {
+        this.applySelection(this.selectedItem, true);
+      }
 
       if (oldItem && this.selectedItem) {
         // TODO(sorvell): allow bindings to update first?
