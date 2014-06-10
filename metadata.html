@@ -1,0 +1,23 @@
+<x-meta id="core-animated-pages" label="Polymer Core Animated Pages" group="Polymer Core" isContainer>
+  <!-- 
+    TODO(sorvell):
+      - can't transition without contents; must document or fix.
+      - transitions syntax awkward: should be space separated
+      - hero-transition should be renamed `hero`
+      - hero and cross-fade-all should be always enabled.
+  -->
+  <template>
+    <core-animated-pages style="width: 400px; height: 400px; border: 1px solid silver;" transitions="hero-transition,cross-fade-all">
+      <section vertical layout style="background-color: orange;">
+        <div style="background-color: tomato; width: 50%; height: 50%;" hero-id="punch" hero>A</div>
+        <div flex></div>
+      </section>
+      <section vertical layout><div flex hero-id="punch" hero style="background-color: tomato; font-size: xx-large;">A</div></section>
+    </core-animated-pages>
+  </template>
+
+  <template id="imports">
+    <link rel="import" href="core-animated-pages.html">
+  </template>
+
+</x-meta>
