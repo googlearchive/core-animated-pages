@@ -65,12 +65,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         scope._heroes = [];
       }
 
+      // FIXME(yvonne) hack for nested pages, revisit
+      src.selectedItem && (src = src.selectedItem);
+      dst.selectedItem && (dst = dst.selectedItem);
+
       // Find all elements with the "hero" attribute in src and dst, and transform
       // dst to src
       var h$ = src.querySelectorAll('[hero], ::shadow [hero]');
       for (var i=0, h0; h0=h$[i]; i++) {
         var v = h0.getAttribute('hero-id');
-        var h1 = dst.querySelector('[hero-id="' + v + '"], ::shadow [hero-id="' + v + '"]');
+        var h1 = dst.querySelector('[hero][hero-id="' + v + '"], ::shadow [hero][hero-id="' + v + '"]');
 
         if (v && h1) {
           var c0 = getComputedStyle(h0);

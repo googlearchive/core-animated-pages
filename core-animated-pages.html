@@ -108,6 +108,13 @@ when switching between them.
       });
       this.transitioning = [];
 
+      this._transitions.forEach(function(transitionId) {
+        var t = this.getTransition(transitionId);
+        if (t) {
+          t.teardown(this);
+        }
+      }.bind(this));
+
       this.fire('core-animated-pages-transition-end');
     },
     
@@ -124,6 +131,13 @@ when switching between them.
 
       if (!oldItem) {
         this.applySelection(this.selectedItem, true);
+        return;
+      }
+
+      if (this.hasAttribute('no-transition')) {
+        this.applySelection(oldItem, false);
+        this.applySelection(this.selectedItem, true);
+        return;
       }
 
       if (oldItem && this.selectedItem) {
