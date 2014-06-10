@@ -24,9 +24,7 @@ when switching between them.
   Polymer({
 
     eventDelegates: {
-      'core-transitionend': 'transitionEnd',
-      'webkitTransitionEnd': 'transitionEnd',
-      'transitionEnd': 'transitionEnd'
+      'core-transitionend': 'transitionEnd'
     },
 
     selected: 0,
@@ -118,10 +116,10 @@ when switching between them.
     },
     
     transitionEnd: function(e) {
-      if (this.transitioning.length && this.selectedItem.contains(e.target)) {
+      if (this.transitioning.length) {
         this.job('transitionWatch', function() {
           this.complete();
-        }, 500);
+        }, 100);
       }
     },
 

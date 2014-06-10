@@ -37,9 +37,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '-webkit-transform'
       ];
 
-      this.boundCompleteFn = this.complete.bind(this, scope);
-      scope.addEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
-
       var duration = timing && timing.duration || 
           (CoreStyle.g.transitions.heroDuration || 
           CoreStyle.g.transitions.duration);
@@ -105,8 +102,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             h.h1.style.borderRadius = h.r0;
           }
 
-          console.log(h);
-
           h.h1.style.webkitTransform = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
           h.h1.style.webkitTransformOrigin = '0 0';
 
@@ -117,18 +112,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     teardown: function(scope) {
+      this.super(arguments);
+
       scope._heroes.forEach(function(h) {
         h.h1.style.webkitTransition = null;
         h.h1.style.webkitTransform = null;
       });
       scope._heroes = [];
-      scope.removeEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
     },
 
     complete: function(scope, e) {
-      if (e.propertyName === '-webkit-transform' && e.elapsedTime > 1) {
-        this.teardown(scope);
-        this.fire('core-transitionend', this, scope);
+      if (e.propertyName === '-webkit-transform') {
+        var done = true;
+        scope._heroes.forEach(function(h) {
+          if (h.h1 === e.path[0]) {
+            h.complete = true;
+          }
+          if (!h.complete) {
+            done = false;
+          }
+        });
+
+        if (done) {
+          this.teardown(scope);
+          this.fire('core-transitionend', this, scope);
+        }
       }
     }
 

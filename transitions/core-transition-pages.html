@@ -47,6 +47,9 @@ Polymer({
     if (this.scopeClass) {
       scope.classList.add(this.scopeClass);
     }
+
+    this.boundCompleteFn = this.complete.bind(this, scope);
+    scope.addEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
   },
 
   calcStyleName: function() {
@@ -64,12 +67,17 @@ Polymer({
   },
 
   teardown: function(scope) {
+    scope.removeEventListener('webkitTransitionEnd', this.boundCompleteFn, false);
     if (this.scopeClass) {
       scope.classList.remove(this.scopeClass);
     }
     if (this.activeClass) {
       scope.classList.remove(this.activeClass);
     }
+  },
+
+  complete: function(scope, e) {
+    this.fire('core-transitionend', this, scope);
   }
 
 });
