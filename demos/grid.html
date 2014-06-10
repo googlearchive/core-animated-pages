@@ -48,7 +48,7 @@
       <div flex>Stuff</div>
       <core-icon-button icon="more-vert"></core-icon-button>
     </core-toolbar>
-    <core-animated-pages id="pages" flex selected="0" on-core-animated-pages-transition-end="{{transitionend}}" transitions="cross-fade-all,hero-transition">
+    <core-animated-pages id="pages" flex selected="0" on-core-animated-pages-transition-end="{{transitionend}}" transitions="cross-fade-all hero-transition">
 
       <section vertical layout>
 
@@ -62,7 +62,7 @@
 
       <template repeat="{{item in items}}">
         <section vertical layout>
-          <div class="view" flex vertical center center-justified layout hero-id="item-{{item}}" hero?="{{$.pages.selected === 0}}"><span cross-fade>{{item}}</span></div>
+          <div class="view" flex vertical center center-justified layout hero-id="item-{{item}}" hero?="{{$.pages.selected === item + 1 || $.pages.selected === 0}}"><span cross-fade>{{item}}</span></div>
         </section>
       </template>
 
