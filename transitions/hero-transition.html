@@ -27,6 +27,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <polymer-element name="hero-transition" extends="core-transition-pages">
 <script>
+(function() {
+
+  var webkitStyles = '-webkit-transition' in document.documentElement.style
+  var TRANSITION_CSSNAME = webkitStyles ? '-webkit-transition' : 'transition';
+  var TRANSFORM_CSSNAME = webkitStyles ? '-webkit-transform' : 'transform';
+  var TRANSITION_NAME = webkitStyles ? 'webkitTransition' : 'transition';
+  var TRANSFORM_NAME = webkitStyles ? 'webkitTransform' : 'transform';
+
   Polymer({
 
     go: function(scope, timing) {
@@ -34,7 +42,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         'border-radius',
         'width',
         'height',
-        '-webkit-transform'
+        TRANSFORM_CSSNAME
       ];
 
       var duration = timing && timing.duration || 
@@ -47,9 +55,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           wt.push(p + ' ' + duration + ' ' + timing.easing);
         });
 
-        h.h1.style.webkitTransition = wt.join(', ');
+        h.h1.style[TRANSITION_NAME] = wt.join(', ');
         h.h1.style.borderRadius = h.r1;
-        h.h1.style.webkitTransform = 'none';
+        h.h1.style[TRANSFORM_NAME] = 'none';
       });
     },
 
@@ -102,8 +110,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             h.h1.style.borderRadius = h.r0;
           }
 
-          h.h1.style.webkitTransform = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
-          h.h1.style.webkitTransformOrigin = '0 0';
+          h.h1.style[TRANSFORM_NAME] = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
+          h.h1.style[TRANSFORM_NAME + 'Origin'] = '0 0';
 
           scope._heroes.push(h);
         }
@@ -115,14 +123,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       this.super(arguments);
 
       scope._heroes.forEach(function(h) {
-        h.h1.style.webkitTransition = null;
-        h.h1.style.webkitTransform = null;
+        h.h1.style[TRANSITION_NAME] = null;
+        h.h1.style[TRANSFORM_NAME] = null;
       });
       scope._heroes = [];
     },
 
     complete: function(scope, e) {
-      if (e.propertyName === '-webkit-transform') {
+      if (e.propertyName === TRANSFORM_CSSNAME) {
         var done = true;
         scope._heroes.forEach(function(h) {
           if (h.h1 === e.path[0]) {
@@ -141,6 +149,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
   });
+
+})();
 </script>
 </polymer-element>
 
