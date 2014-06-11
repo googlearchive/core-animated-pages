@@ -76,6 +76,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       // Find all elements with the "hero" attribute in src and dst, and transform
       // dst to src
+      // TODO(dfreedm): provide a polyfill solution for qSA with ::shadow
       var h$ = src.querySelectorAll('[hero], ::shadow [hero]');
       for (var i=0, h0; h0=h$[i]; i++) {
         var v = h0.getAttribute('hero-id');
