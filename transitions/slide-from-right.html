@@ -10,22 +10,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link href="core-transition-pages.html" rel="import">
 
 <core-style id="slide-from-right">
+  polyfill-next-selector { content: ':host > *'; }
   :host(.slide-from-right) ::content > * {
     -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
     transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  polyfill-next-selector { content: ':host > .core-selected ~ *:not(.core-selected)'; }
   :host(.slide-from-right) ::content > .core-selected ~ *:not(.core-selected) {
     -webkit-transform: translateX(100%);
+    transform: translateX(100%);
   }
 
+  polyfill-next-selector { content: ':host > *:not(.core-selected); }
   :host(.slide-from-right) ::content > *:not(.core-selected) {
     -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
   }
 
   polyfill-next-selector { content: ':host > .core-selected'; }
   :host(.slide-from-right) ::content > .core-selected {
     -webkit-transform: none;
+    transform: none;
   }
 </core-style>
 
