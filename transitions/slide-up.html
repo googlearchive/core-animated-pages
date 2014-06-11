@@ -10,11 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link href="core-transition-pages.html" rel="import">
 
 <core-style id="slide-up">
+  polyfill-next-selector { content: ':host.slide-up > * [slide-up]'; }
   :host(.slide-up) ::content > * [slide-up] {
     -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
     transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-up]'; }
   ::content > *:not(.core-selected) [slide-up] {
     -webkit-transform: translateY(100%);
     transform: translateY(100%);

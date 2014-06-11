@@ -11,11 +11,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 <core-style id="list-cascade">
+  polyfill-next-selector { content: ':host.list-cascade > * [list-cascade]'; }
   :host(.list-cascade) ::content > * [list-cascade] * {
     -webkit-transition: -webkit-transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
     transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  polyfill-next-selector { content: ':host > *:not(.core-selected) [list-cascade] *'; }
   ::content > *:not(.core-selected) [list-cascade] * {
     -webkit-transform: translateY(200%);
     transform: translateY(200%);
@@ -28,20 +30,28 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transform: none;
   }
 
+  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *:nth-child(2)'; }
   ::content > .core-selected [list-cascade] *:nth-child(2) {
     -webkit-transition-delay: 0.1s;
+    transition-delay: 0.1s;
   }
 
+  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *:nth-child(3)'; }
   ::content > .core-selected [list-cascade] *:nth-child(3) {
     -webkit-transition-delay: 0.2s;
+    transition-delay: 0.2s;
   }
 
+  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *:nth-child(4)'; }
   ::content > .core-selected [list-cascade] *:nth-child(4) {
     -webkit-transition-delay: 0.3s;
+    transition-delay: 0.3s;
   }
   
+  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *:nth-child(5)'; }
   ::content > .core-selected [list-cascade] *:nth-child(5) {
     -webkit-transition-delay: 0.4s;
+    transition-delay: 0.4s;
   }
 </core-style>
 
