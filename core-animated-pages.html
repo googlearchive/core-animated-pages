@@ -83,7 +83,8 @@ when switching between them.
         }
       }.bind(this));
 
-      getComputedStyle(src).top;
+      // offsetTop forces layout on Safari and Chrome
+      src.offsetTop;
 
       this.applySelection(src, false);
       this.applySelection(dst, true);

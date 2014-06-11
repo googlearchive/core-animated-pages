@@ -12,13 +12,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <core-style id="hero-transition">
   /* Hide heroes that are not currently transitioning */
   polyfill-next-selector { content: ':host > [animate] [hero]'; }
-  ::content > [animate] [hero], ::content > [animate]::shadow [hero] {
+  ::content > [animate] /deep/ [hero] {
     visibility: hidden;
   }
 
   polyfill-next-selector { content: ':host > .core-selected [hero]'; }
-  ::content > .core-selected[animate] [hero],
-  ::content > .core-selected[animate]::shadow [hero] {
+  ::content > .core-selected[animate] /deep/ [hero] {
     visibility: visible;
     z-index: 10000;
   }
@@ -70,17 +69,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         scope._heroes = [];
       }
 
-      // FIXME(yvonne) hack for nested pages, revisit
-      src.selectedItem && (src = src.selectedItem);
-      dst.selectedItem && (dst = dst.selectedItem);
+      // FIXME(yvonne): basic support for nested pages.
+      // Look for heroes in the light DOM and one level of shadow DOM of the src and dst,
+      // and also in src.selectedItem or dst.selectedItem, then transform the dst hero to src
+      var ss = window.ShadowDOMPolyfill ? '[hero]' : '[hero], ::shadow [hero]';
+      var h$ = src.querySelectorAll(ss);
+      if (src.selectedItem) {
+        h$ = h$.array();
+        hs$ = src.selectedItem.querySelectorAll(ss);
+        hsa$ = [];
+        // De-duplicate items
+        Array.prototype.forEach.call(hs$, function(hs) {
+          if (h$.indexOf(hs) === -1) {
+            hsa$.appendChild(hs);
+          }
+        })
+        h$ = h$.concat(hsa$);
+      }
 
-      // Find all elements with the "hero" attribute in src and dst, and transform
-      // dst to src
-      // TODO(dfreedm): provide a polyfill solution for qSA with ::shadow
-      var h$ = src.querySelectorAll('[hero], ::shadow [hero]');
       for (var i=0, h0; h0=h$[i]; i++) {
         var v = h0.getAttribute('hero-id');
-        var h1 = dst.querySelector('[hero][hero-id="' + v + '"], ::shadow [hero][hero-id="' + v + '"]');
+        var ds1 = '[hero][hero-id="' + v + '"]';
+        var ds2 = '::shadow [hero][hero-id="' + v + '"]';
+        var h1 = dst.querySelector(ds1) || (!window.ShadowDOMPolyfill && dst.querySelector(ds2));
+        if (!h1 && dst.selectedItem) {
+          h1 = dst.selectedItem.querySelector(ds1) || dst.selectedItem.querySelector(ds2);
+        }
+
+        // console.log(v, h0, h1);
 
         if (v && h1) {
           var c0 = getComputedStyle(h0);
@@ -110,6 +126,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           if (h.r0 !== h.r1) {
             h.h1.style.borderRadius = h.r0;
           }
+
+          // console.log(h);
 
           h.h1.style[TRANSFORM_NAME] = 'translate(' + dl + 'px,' + dt + 'px)' + ' scale(' + sw + ',' + sh + ')';
           h.h1.style[TRANSFORM_NAME + 'Origin'] = '0 0';

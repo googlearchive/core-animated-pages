@@ -52,7 +52,7 @@
   <core-animated-pages id="pages" selected="{{page}}" selectedItem="{{selectedItem}}" transitions="hero-transition" no-transition?="{{noTransition}}">
 
     <section id="page1" cross-fade>
-      <div class="tall-toolbar colored" style="background-color:orange;" layout vertical hero-id="thing" hero>
+      <div class="tall-toolbar colored" style="background-color:orange;" layout vertical hero-id="thing" hero?="{{page === 0 || !noTransition}}">
         <div layout horizontal center>
           <core-icon-button icon="clear" on-tap="{{back}}"></core-icon-button>
           <div flex>One</div>
@@ -73,7 +73,7 @@
         <div flex></div>
       </div>
       <div flex class="body"></div>
-      <div class="square" style="background-color:orange;" hero-id="thing" hero></div>
+      <div class="square" style="background-color:orange;" hero-id="thing" hero?="{{page === 1 || !noTransition}}"></div>
     </section>
 
   </core-animated-pages>
