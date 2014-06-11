@@ -81,7 +81,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // De-duplicate items
         Array.prototype.forEach.call(hs$, function(hs) {
           if (h$.indexOf(hs) === -1) {
-            hsa$.appendChild(hs);
+            hsa$.push(hs);
           }
         })
         h$ = h$.concat(hsa$);
