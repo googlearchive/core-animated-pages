@@ -11,19 +11,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <core-style id="slide-down">
   polyfill-next-selector { content: ':host.slide-down > * [slide-down]'; }
-  :host(.slide-down) ::content > * [slide-down] {
+  :host(.slide-down) ::content > * /deep/ [slide-down] {
     -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
     transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-down]'; }
-  ::content > *:not(.core-selected) [slide-down] {
-    -webkit-transform: translateY(100%);
-    transform: translateY(100%);
+  ::content > *:not(.core-selected) /deep/ [slide-down] {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
   }
 
   polyfill-next-selector { content: ':host > .core-selected [slide-down]'; }
-  ::content > .core-selected [slide-down] {
+  ::content > .core-selected /deep/ [slide-down] {
     -webkit-transform: none;
     transform: none;
   }

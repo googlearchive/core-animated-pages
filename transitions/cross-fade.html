@@ -11,18 +11,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <core-style id="cross-fade">
   polyfill-next-selector { content: ':host > * [cross-fade]'; }
-  ::content > * /deep/ [cross-fade] {
+  ::content > * [cross-fade], ::content > *::shadow [cross-fade] {
     -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
   }
 
   polyfill-next-selector { content: ':host > *:not(.core-selected) [cross-fade]'; }
-  ::content > *:not(.core-selected) /deep/ [cross-fade] {
+  ::content > *:not(.core-selected) [cross-fade], ::content > *:not(.core-selected)::shadow [cross-fade] {
     opacity: 0;
   }
 
   polyfill-next-selector { content: ':host > .core-selected [cross-fade]'; }
-  ::content > .core-selected /deep/ [cross-fade] {
+  ::content > .core-selected [cross-fade], ::content > .core-selected::shadow [cross-fade] {
     opacity: 1;
   }
 
