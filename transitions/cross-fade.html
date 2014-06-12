@@ -31,7 +31,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <core-style id="cross-fade-all">
   /* cross-fade-all: cross fade everything except for heroes and their parents */
   polyfill-next-selector { content: ':host(.cross-fade-all) > * *:not([hero]):not([hero-p]):not([cross-fade])'; }
-  
   :host(.cross-fade-all) ::content > * /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
     -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
@@ -61,6 +60,39 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 </core-style>
 
+<core-style id="cross-fade-heroes">
+  /* cross-fade-heroes: cross fade the innards of heroes */
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > * [hero] *:not([hero]):not([hero-p]):not([cross-fade])'; }
+  :host(.cross-fade-heroes) ::content > * /deep/ [hero] /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+    -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+  }
+
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > *:not(.core-selected) [hero] *:not([hero]):not([hero-p]):not([cross-fade])'; }
+  :host(.cross-fade-heroes) ::content > *:not(.core-selected) /deep/ [hero] /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > .core-selected [hero] *:not([hero])'; }
+  .host(.cross-fade-heroes) ::content > .core-selected /deep/ [hero] /deep/ * {
+    opacity: 1;
+  }
+
+  /* Only background-color is allowed for the hero's parents, no opacity transitions */
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > * [hero] [hero-p]'; }
+  :host(.cross-fade-heroes) ::content > * /deep/ [hero] /deep/ [hero-p] {
+    -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    opacity: 1;
+  }
+
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > *:not(.core-selected) [hero] [hero-p]'; }
+  :host(.cross-fade-heroes) ::content > *:not(.core-selected) /deep/ [hero] /deep/ [hero-p] {
+    background-color: rgba(0, 0, 0, 0);
+  }
+</core-style>
+
 
 <core-transition-pages id="cross-fade"></core-transition-pages>
 <core-transition-pages id="cross-fade-all" scopeClass="cross-fade-all"></core-transition-pages>
+<core-transition-pages id="cross-fade-heroes" scopeClass="cross-fade-heroes"></core-transition-pages>
