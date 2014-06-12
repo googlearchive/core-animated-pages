@@ -16,16 +16,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-up]'; }
-  ::content > *:not(.core-selected) /deep/ [slide-up] {
-    -webkit-transform: translateY(100%);
-    transform: translateY(100%);
-  }
-
   polyfill-next-selector { content: ':host > .core-selected [slide-up]'; }
   ::content > .core-selected /deep/ [slide-up] {
     -webkit-transform: none;
     transform: none;
+  }
+
+  polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-up]'; }
+  ::content > *:not(.core-selected) /deep/ [slide-up] {
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
   }
 </core-style>
 

@@ -16,6 +16,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  polyfill-next-selector { content: ':host(.slide-from-right) > .core-selected'; }
+  :host(.slide-from-right) ::content > .core-selected {
+    -webkit-transform: none;
+    transform: none;
+  }
+
   polyfill-next-selector { content: ':host(.slide-from-right) > .core-selected ~ *:not(.core-selected)'; }
   :host(.slide-from-right) ::content > .core-selected ~ *:not(.core-selected) {
     -webkit-transform: translateX(100%);
@@ -27,12 +33,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     -webkit-transform: translateX(-100%);
     transform: translateX(-100%);
   }
-
-  polyfill-next-selector { content: ':host(.slide-from-right) > .core-selected'; }
-  :host(.slide-from-right) ::content > .core-selected {
-    -webkit-transform: none;
-    transform: none;
-  }
+  
 </core-style>
 
 <core-transition-pages id="slide-from-right" scopeClass="slide-from-right"></core-transition-pages>

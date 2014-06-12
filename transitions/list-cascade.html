@@ -17,17 +17,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: transform 1s cubic-bezier(0.4, 0, 0.2, 1), opacity {{g.transitions.cascade || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *'; }
+  ::content > .core-selected [list-cascade] * {
+    -webkit-transform: none;
+    transform: none;
+  }
+
   polyfill-next-selector { content: ':host > *:not(.core-selected) [list-cascade] *'; }
   ::content > *:not(.core-selected) [list-cascade] * {
     -webkit-transform: translateY(200%);
     transform: translateY(200%);
     opacity: 0.2;
-  }
-
-  polyfill-next-selector { content: ':host > .core-selected [list-cascade] *'; }
-  ::content > .core-selected [list-cascade] * {
-    -webkit-transform: none;
-    transform: none;
   }
 
   polyfill-next-selector { content: ':host > .core-selected [list-cascade] *:nth-child(2)'; }
