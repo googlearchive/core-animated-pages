@@ -43,14 +43,19 @@ when switching between them.
     },
 
     _transitionsChanged: function(old) {
-      if (old) {
-        old.forEach(function(oldId) {
-          var t = this.getTransition(oldId);
-          if (t) {
-            t.teardown(this);
-          }
-        }.bind(this));
+      if (this._transitionElements) {
+        this._transitionElements.forEach(function(t) {
+          t.teardown(this);
+        }, this);
       }
+      this._transitionElements = [];
+      this._transitions.forEach(function(transitionId) {
+        var t = this.getTransition(transitionId);
+        if (t) {
+          this._transitionElements.push(t);
+          t.setup(this);
+        }
+      }, this);
     },
 
     getTransition: function(transitionId) {
@@ -69,33 +74,34 @@ when switching between them.
       if (this.transitioning.indexOf(dst) === -1) {
         this.transitioning.push(dst);
       }
-
+      // force src, dst to display 
       src.setAttribute('animate', '');
       dst.setAttribute('animate', '');
-
-      var transitions = [];
-
-      this._transitions.forEach(function(transitionId) {
-        var t = this.getTransition(transitionId);
-        if (t) {
-          t.setup(src, dst, this);
-          transitions.push(t);
-        }
-      }.bind(this));
-
-      // offsetTop forces layout on Safari and Chrome
+      //
+      var options = {
+        src: src,
+        dst: dst,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+      }
+      //
+      // prepare transition
+      this._transitionElements.forEach(function(transition) {
+        transition.prepare(this, options);
+      }, this);
+      //
+      // force layout!
       src.offsetTop;
-
+      //
+      // apply selection
       this.applySelection(src, false);
       this.applySelection(dst, true);
+      //
+      // start trantision
+      this._transitionElements.forEach(function(transition) {
+        transition.go(this, options);
+      }, this);
 
-      transitions.forEach(function(transition) {
-        transition.go(this, {
-          easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-        });
-      }.bind(this));
-
-      if (!this._transitions.length) {
+      if (!this._transitionElements.length) {
         this.complete();
       }
     },
@@ -106,12 +112,9 @@ when switching between them.
       });
       this.transitioning = [];
 
-      this._transitions.forEach(function(transitionId) {
-        var t = this.getTransition(transitionId);
-        if (t) {
-          t.teardown(this);
-        }
-      }.bind(this));
+      this._transitionElements.forEach(function(transition) {
+        transition.ensureComplete(this);
+      }, this);
 
       this.fire('core-animated-pages-transition-end');
     },
@@ -141,6 +144,7 @@ when switching between them.
       if (oldItem && this.selectedItem) {
         // TODO(sorvell): allow bindings to update first?
         var self = this;
+        Platform.flush();
         Platform.endOfMicrotask(function() {
           self.applyTransition(oldItem, self.selectedItem);
         });

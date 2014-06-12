@@ -10,23 +10,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link href="core-transition-pages.html" rel="import">
 
 <core-style id="scale-up">
+  polyfill-next-selector { content: ':host > * [scale-up]'; }
   ::content > * /deep/ [scale-up] {
-    -webkit-transition: -webkit-transform {{g.transitions.scaleDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1) {{g.transitions.scaleDelay || g.transitions.delay}};
-    transition: transform {{g.transitions.scaleDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1) {{g.transitions.scaleDelay || g.transitions.delay}};
-  }
-
-  ::content > *:not(.core-selected) /deep/ [scale-up] {
-    -webkit-transform: scale(0);
+    -webkit-transition: -webkit-transform {{g.transitions.scaleDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1) {{g.transitions.scaleDelay || g.transitions.delay}} !important;
+    transition: transform {{g.transitions.scaleDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1) {{g.transitions.scaleDelay || g.transitions.delay}} !important;
   }
 
   polyfill-next-selector { content: ':host > .core-selected [scale-up]'; }
   ::content > .core-selected /deep/ [scale-up]  {
     -webkit-transform: none;
+    transform: none;
   }
 
-  polyfill-next-selector { content: ':host > .core-selected[animated] [scale-up]'; }
-  ::content > .core-selected[animated] /deep/ [scale-up]  {
-    z-index: 10000;
+  polyfill-next-selector { content: ':host > *:not(.core-selected) [scale-up]'; }
+  ::content > *:not(.core-selected) /deep/ [scale-up] {
+    -webkit-transform: scale(0);
+    transform: scale(0);
+  }
+
+  polyfill-next-selector { content: ':host > .core-selected[animate] [scale-up]'; }
+  ::content > .core-selected[animate] /deep/ [scale-up]  {
+    z-index: 1000;
   }
 </core-style>
 

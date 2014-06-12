@@ -4,7 +4,7 @@ polyfill-next-selector { content: ':host > [animate] [hero]'; }
   visibility: hidden;
 }
 
-polyfill-next-selector { content: ':host > .core-selected [hero]'; }
+polyfill-next-selector { content: ':host > .core-selected[animate] [hero]'; }
 ::content > .core-selected[animate] /deep/ [hero],
 ::content > .core-selected[animate]::shadow [hero] {
   visibility: visible;

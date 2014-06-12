@@ -16,7 +16,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     visibility: hidden;
   }
 
-  polyfill-next-selector { content: ':host > .core-selected [hero]'; }
+  polyfill-next-selector { content: ':host > .core-selected[animate] [hero]'; }
   ::content > .core-selected[animate] /deep/ [hero] {
     visibility: visible;
     z-index: 10000;
@@ -34,9 +34,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   var TRANSITION_NAME = webkitStyles ? 'webkitTransition' : 'transition';
   var TRANSFORM_NAME = webkitStyles ? 'webkitTransform' : 'transform';
 
+  var hasShadowDOMPolyfill = window.ShadowDOMPolyfill;
+
   Polymer({
 
-    go: function(scope, timing) {
+    go: function(scope, options) {
       var props = [
         'border-radius',
         'width',
@@ -44,27 +46,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         TRANSFORM_CSSNAME
       ];
 
-      var duration = timing && timing.duration || 
+      var duration = options && options.duration || 
           (CoreStyle.g.transitions.heroDuration || 
           CoreStyle.g.transitions.duration);
 
+      
       scope._heroes.forEach(function(h) {
         var wt = [];
         props.forEach(function(p) {
-          wt.push(p + ' ' + duration + ' ' + timing.easing);
+          wt.push(p + ' ' + duration + ' ' + options.easing);
         });
 
         h.h1.style[TRANSITION_NAME] = wt.join(', ');
         h.h1.style.borderRadius = h.r1;
         h.h1.style[TRANSFORM_NAME] = 'none';
       });
-    },
 
-    setup: function(src, dst, scope) {
       this.super(arguments);
 
+    },
+
+    prepare: function(scope, options) {
+      this.super(arguments);
+      var src = options.src, dst = options.dst;
+
       if (scope._heroes && scope._heroes.length) {
-        this.teardown(scope);
+        this.ensureComplete(scope);
       } else {
         scope._heroes = [];
       }
@@ -72,11 +79,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // FIXME(yvonne): basic support for nested pages.
       // Look for heroes in the light DOM and one level of shadow DOM of the src and dst,
       // and also in src.selectedItem or dst.selectedItem, then transform the dst hero to src
-      var ss = window.ShadowDOMPolyfill ? '[hero]' : '[hero], ::shadow [hero]';
-      var h$ = src.querySelectorAll(ss);
+      var ss = '[hero]';
+      var h$ = this.findAllInShadows(src, ss);
       if (src.selectedItem) {
-        h$ = h$.array();
-        hs$ = src.selectedItem.querySelectorAll(ss);
+        hs$ = this.findAllInShadows(src.selectedItem, ss);
         hsa$ = [];
         // De-duplicate items
         Array.prototype.forEach.call(hs$, function(hs) {
@@ -89,15 +95,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       for (var i=0, h0; h0=h$[i]; i++) {
         var v = h0.getAttribute('hero-id');
-        var ds1 = '[hero][hero-id="' + v + '"]';
-        var ds2 = '::shadow [hero][hero-id="' + v + '"]';
-        var h1 = dst.querySelector(ds1) || (!window.ShadowDOMPolyfill && dst.querySelector(ds2));
+        var ds = '[hero][hero-id="' + v + '"]';
+        var h1 = this.findInShadows(dst, ds);
+
         if (!h1 && dst.selectedItem) {
-          h1 = dst.selectedItem.querySelector(ds1) || dst.selectedItem.querySelector(ds2);
+          h1 = this.findInShadows(dst.selectedItem, ds);
         }
 
         // console.log(v, h0, h1);
-
         if (v && h1) {
           var c0 = getComputedStyle(h0);
           var c1 = getComputedStyle(h1);
@@ -138,14 +143,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     },
 
-    teardown: function(scope) {
-      this.super(arguments);
+    // carefully look into ::shadow with polyfill specific hack
+    findInShadows: function(node, selector) {
+      return node.querySelector(selector) || (hasShadowDOMPolyfill ? 
+          Platform.queryAllShadows(node, selector) :
+          node.querySelector('::shadow ' + selector));
+    },
 
-      scope._heroes.forEach(function(h) {
-        h.h1.style[TRANSITION_NAME] = null;
-        h.h1.style[TRANSFORM_NAME] = null;
-      });
-      scope._heroes = [];
+    findAllInShadows: function(node, selector) {
+      if (hasShadowDOMPolyfill) {
+        var nodes = node.querySelectorAll(selector).array();
+        var shadowNodes = Platform.queryAllShadows(node, selector, true);
+        return nodes.concat(shadowNodes);
+      } else {
+        return node.querySelectorAll(selector + ', ::shadow ' + selector).array();
+      }
+    },
+
+    ensureComplete: function(scope) {
+      this.super(arguments);
+      if (scope._heroes) {
+        scope._heroes.forEach(function(h) {
+          h.h1.style[TRANSITION_NAME] = null;
+          h.h1.style[TRANSFORM_NAME] = null;
+        });
+        scope._heroes = [];
+      }
     },
 
     complete: function(scope, e) {
@@ -161,8 +184,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         if (done) {
-          this.teardown(scope);
-          this.fire('core-transitionend', this, scope);
+          this.super(arguments);
         }
       }
     }
