@@ -21,6 +21,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     visibility: visible;
     z-index: 10000;
   }
+
+  polyfill-next-selector { content: ':host > * [hero-p]'; }
+  ::content > * /deep/ [hero-p] {
+    -webkit-transition: box-shadow 100ms ease-out;
+    transition: box-shadow 100ms ease-out;
+  }
+
+  polyfill-next-selector { content: ':host > [animate] [hero-p]'; }
+  ::content > [animate] /deep/ [hero-p] {
+    box-shadow: none;
+  }
 </core-style>
 
 
