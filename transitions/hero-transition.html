@@ -76,6 +76,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       this.super(arguments);
 
+      if (!scope._heroes.length) {
+        this.completed = true;
+      }
     },
 
     prepare: function(scope, options) {
