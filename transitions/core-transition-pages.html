@@ -21,13 +21,17 @@ var transitions = CoreStyle.g.transitions = CoreStyle.g.transitions || {};
 transitions.duration = '500ms';
 transitions.heroDelay = '50ms';
 transitions.scaleDelay = '500ms';
+transitions.cascadeFadeDuration = '250ms';
 
 Polymer({
 
   publish: {
     scopeClass: '',
-    activeClass: ''
+    activeClass: '',
+    transitionProperty: ''
   },
+
+  completed: false,
 
   prepare: function(scope, options) {
     this.boundCompleteFn = this.complete.bind(this, scope);
@@ -37,6 +41,7 @@ Polymer({
   },
 
   go: function(scope, options) {
+    this.completed = false;
     if (this.activeClass) {
       scope.classList.add(this.activeClass);
     }
@@ -70,10 +75,10 @@ Polymer({
     scopeStyle.applyRef(id);
   },
 
-
   complete: function(scope, e) {
     // TODO(yvonne): hack, need to manage completion better
-    if (e.propertyName !== 'box-shadow') {
+    if (e.propertyName !== 'box-shadow' && (!this.transitionProperty || e.propertyName.indexOf(this.transitionProperty) !== -1)) {
+      this.completed = true;
       this.fire('core-transitionend', this, scope);
     }
   },

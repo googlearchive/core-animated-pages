@@ -121,9 +121,17 @@ when switching between them.
     
     transitionEnd: function(e) {
       if (this.transitioning.length) {
-        this.job('transitionWatch', function() {
-          this.complete();
-        }, 100);
+        var completed = true;
+        this._transitionElements.forEach(function(transition) {
+          if (!transition.completed) {
+            completed = false;
+          }
+        });
+        if (completed) {
+          this.job('transitionWatch', function() {
+            this.complete();
+          }, 100);
+        }
       }
     },
 
