@@ -30,7 +30,7 @@ when switching between them.
     selected: 0,
 
     registerCallback: function() {
-      this.meta = document.createElement('core-transition');
+      this.tmeta = document.createElement('core-transition');
     },
 
     created: function() {
@@ -59,7 +59,7 @@ when switching between them.
     },
 
     getTransition: function(transitionId) {
-      return this.meta.byId(transitionId);
+      return this.tmeta.byId(transitionId);
     },
 
     selectionSelect: function(e, detail) {
