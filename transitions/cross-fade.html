@@ -16,13 +16,32 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
   }
 
-  polyfill-next-selector { content: ':host > *:not(.core-selected) [cross-fade]'; }
-  ::content > *:not(.core-selected) /deep/ [cross-fade] {
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade]'; }
+  ::content > [animate]:not(.core-selected) /deep/ [cross-fade] {
     opacity: 0;
   }
 
   polyfill-next-selector { content: ':host > .core-selected [cross-fade]'; }
   ::content > .core-selected /deep/ [cross-fade] {
+    opacity: 1;
+  }
+
+</core-style>
+
+<core-style id="cross-fade-delayed">
+  polyfill-next-selector { content: ':host > * [cross-fade-delayed]'; }
+  ::content > * /deep/ [cross-fade-delayed] {
+    -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out {{g.transitions.duration}};
+    transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out {{g.transitions.duration}};
+  }
+
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade-delayed]'; }
+  ::content > [animate]:not(.core-selected) /deep/ [cross-fade-delayed] {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: ':host > .core-selected [cross-fade-delayed]'; }
+  ::content > .core-selected /deep/ [cross-fade-delayed] {
     opacity: 1;
   }
 
@@ -36,8 +55,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
   }
 
-  polyfill-next-selector { content: ':host(.cross-fade-all) > *:not(.core-selected) *:not([hero]):not([hero-p]):not([cross-fade])'; }
-  :host(.cross-fade-all) ::content > *:not(.core-selected) /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+  polyfill-next-selector { content: ':host(.cross-fade-all) > [animate]:not(.core-selected) *:not([hero]):not([hero-p]):not([cross-fade])'; }
+  :host(.cross-fade-all) ::content > [animate]:not(.core-selected) /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
     opacity: 0;
   }
 
@@ -54,22 +73,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     opacity: 1;
   }
 
-  polyfill-next-selector { content: ':host(.cross-fade-all) > *:not(.core-selected) [hero-p]'; }
-  :host(.cross-fade-all) ::content > *:not(.core-selected) /deep/ [hero-p] {
+  polyfill-next-selector { content: ':host(.cross-fade-all) > [animate]:not(.core-selected) [hero-p]'; }
+  :host(.cross-fade-all) ::content > [animate]:not(.core-selected) /deep/ [hero-p] {
     background-color: rgba(0, 0, 0, 0);
   }
 </core-style>
 
 <core-style id="cross-fade-heroes">
   /* cross-fade-heroes: cross fade the innards of heroes */
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > * [hero] *:not([hero]):not([hero-p]):not([cross-fade])'; }
-  :host(.cross-fade-heroes) ::content > * /deep/ [hero] /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > * [hero] *:not([hero]):not([hero-p]):not([cross-fade]):not([cross-fade-delayed])'; }
+  :host(.cross-fade-heroes) ::content > * /deep/ [hero] /deep/ *:not([hero]):not([hero-p]):not([cross-fade]):not([cross-fade-delayed]) {
     -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
   }
 
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > *:not(.core-selected) [hero] *:not([hero]):not([hero-p]):not([cross-fade])'; }
-  :host(.cross-fade-heroes) ::content > *:not(.core-selected) /deep/ [hero] /deep/ *:not([hero]):not([hero-p]):not([cross-fade]) {
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > [animate]:not(.core-selected) [hero] *:not([hero]):not([hero-p]):not([cross-fade])'; }
+  :host(.cross-fade-heroes) ::content > [animate]:not(.core-selected) /deep/ [hero] /deep/ *:not([hero]):not([hero-p]) {
     opacity: 0;
   }
 
@@ -86,13 +105,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     opacity: 1;
   }
 
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > *:not(.core-selected) [hero] [hero-p]'; }
-  :host(.cross-fade-heroes) ::content > *:not(.core-selected) /deep/ [hero] /deep/ [hero-p] {
+  polyfill-next-selector { content: ':host(.cross-fade-heroes) > [animate]:not(.core-selected) [hero] [hero-p]'; }
+  :host(.cross-fade-heroes) ::content > [animate]:not(.core-selected) /deep/ [hero] /deep/ [hero-p] {
     background-color: rgba(0, 0, 0, 0);
   }
 </core-style>
 
 
 <core-transition-pages id="cross-fade"></core-transition-pages>
+<core-transition-pages id="cross-fade-delayed"></core-transition-pages>
 <core-transition-pages id="cross-fade-all" scopeClass="cross-fade-all"></core-transition-pages>
 <core-transition-pages id="cross-fade-heroes" scopeClass="cross-fade-heroes"></core-transition-pages>
