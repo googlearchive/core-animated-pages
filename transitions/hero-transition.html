@@ -63,9 +63,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       
       scope._heroes.forEach(function(h) {
+        var d = h.h0.hasAttribute('hero-delayed') ? CoreStyle.g.transitions.heroDelay : '';
         var wt = [];
         props.forEach(function(p) {
-          wt.push(p + ' ' + duration + ' ' + options.easing);
+          wt.push(p + ' ' + duration + ' ' + options.easing + ' ' + d);
         });
 
         h.h1.style[TRANSITION_NAME] = wt.join(', ');
