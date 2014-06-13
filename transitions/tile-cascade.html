@@ -10,67 +10,80 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link href="core-transition-pages.html" rel="import">
 
 <core-style id="tile-cascade">
-  :host(.tile-cascade) ::content > * /deep/ [tile-cascade] > *:not(template) {
+  polyfill-next-selector { content: ':host(.tile-cascade) > * [tile-cascade] > div'; }
+  :host(.tile-cascade) ::content > * /deep/ [tile-cascade] > div {
     -webkit-transition: -webkit-transform {{g.transitions.cascadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
     transition: transform {{g.transitions.cascadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
-  ::content > .core-selected /deep/ [tile-cascade] > * {
+  polyfill-next-selector { content: '.core-selected [tile-cascade] > div'; }
+  ::content > .core-selected /deep/ [tile-cascade] > div {
     -webkit-transform: none;
     transform: none;
   }
 
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(1) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(1)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(1) {
     -webkit-transform: translateY(10%);
     transform: translateY(10%);
   }
 
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(2) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(2)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(2) {
     -webkit-transform: translateY(40%);
     transform: translateY(40%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(3) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(3)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(3) {
     -webkit-transform: translateY(60%);
     transform: translateY(60%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(4) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(4)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(4) {
     -webkit-transform: translateY(40%);
     transform: translateY(40%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(5) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(5)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(5) {
     -webkit-transform: translateY(35%);
     transform: translateY(35%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(6) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(6)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(6) {
     -webkit-transform: translateY(60%);
     transform: translateY(60%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(7) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(7)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(7) {
     -webkit-transform: translateY(80%);
     transform: translateY(80%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(8) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(8)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(8) {
     -webkit-transform: translateY(80%);
     transform: translateY(80%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(9) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(9)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(9) {
     -webkit-transform: translateY(30%);
     transform: translateY(30%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(10) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(10)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(10) {
     -webkit-transform: translateY(60%);
     transform: translateY(60%);
   }
   
-  ::content > *:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(11) {
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(11)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(11) {
     -webkit-transform: translateY(100%);
     transform: translateY(100%);
   }
