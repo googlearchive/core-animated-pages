@@ -16,9 +16,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
   }
 
-  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade]'; }
-  ::content > [animate]:not(.core-selected) /deep/ [cross-fade] {
-    opacity: 0;
+  polyfill-next-selector { content: ':host > * [cross-fade][hero-p]'; }
+  ::content > * /deep/ [cross-fade][hero-p] {
+    -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
   }
 
   polyfill-next-selector { content: ':host > .core-selected [cross-fade]'; }
@@ -26,6 +27,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     opacity: 1;
   }
 
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade]:not([hero-p])'; }
+  ::content > [animate]:not(.core-selected) /deep/ [cross-fade]:not([hero-p]) {
+    opacity: 0;
+  }
+
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade][hero-p]'; }
+  ::content > [animate]:not(.core-selected) /deep/ [cross-fade][hero-p] {
+    background-color: rgba(0, 0, 0, 0);
+  }
 </core-style>
 
 <core-style id="cross-fade-delayed">
@@ -79,40 +89,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 </core-style>
 
-<core-style id="cross-fade-heroes">
-  /* cross-fade-heroes: cross fade the innards of heroes */
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > * [hero] *:not([hero]):not([hero-p]):not([cross-fade]):not([cross-fade-delayed])'; }
-  :host(.cross-fade-heroes) ::content > * /deep/ [hero] /deep/ *:not([hero]):not([hero-p]):not([cross-fade]):not([cross-fade-delayed]) {
-    -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
-    transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
-  }
-
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > [animate]:not(.core-selected) [hero] *:not([hero]):not([hero-p]):not([cross-fade])'; }
-  :host(.cross-fade-heroes) ::content > [animate]:not(.core-selected) /deep/ [hero] /deep/ *:not([hero]):not([hero-p]) {
-    opacity: 0;
-  }
-
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > .core-selected [hero] *:not([hero])'; }
-  .host(.cross-fade-heroes) ::content > .core-selected /deep/ [hero] /deep/ * {
-    opacity: 1;
-  }
-
-  /* Only background-color is allowed for the hero's parents, no opacity transitions */
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > * [hero] [hero-p]'; }
-  :host(.cross-fade-heroes) ::content > * /deep/ [hero] /deep/ [hero-p] {
-    -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
-    transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
-    opacity: 1;
-  }
-
-  polyfill-next-selector { content: ':host(.cross-fade-heroes) > [animate]:not(.core-selected) [hero] [hero-p]'; }
-  :host(.cross-fade-heroes) ::content > [animate]:not(.core-selected) /deep/ [hero] /deep/ [hero-p] {
-    background-color: rgba(0, 0, 0, 0);
-  }
-</core-style>
-
-
 <core-transition-pages id="cross-fade"></core-transition-pages>
 <core-transition-pages id="cross-fade-delayed"></core-transition-pages>
 <core-transition-pages id="cross-fade-all" scopeClass="cross-fade-all"></core-transition-pages>
-<core-transition-pages id="cross-fade-heroes" scopeClass="cross-fade-heroes"></core-transition-pages>

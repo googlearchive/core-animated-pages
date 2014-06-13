@@ -22,7 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transform: none;
   }
 
-  polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-down]'; }
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [slide-down]'; }
   ::content > [animate]:not(.core-selected) /deep/ [slide-down] {
     -webkit-transform: translateY(-100%);
     transform: translateY(-100%);

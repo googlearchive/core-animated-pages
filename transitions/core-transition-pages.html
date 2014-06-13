@@ -70,7 +70,10 @@ Polymer({
 
 
   complete: function(scope, e) {
-    this.fire('core-transitionend', this, scope);
+    // TODO(yvonne): hack, need to manage completion better
+    if (e.propertyName !== 'box-shadow') {
+      this.fire('core-transitionend', this, scope);
+    }
   },
 
   // TODO(sorvell): ideally we do this in complete.

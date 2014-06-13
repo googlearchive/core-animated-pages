@@ -22,8 +22,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transform: none;
   }
 
-  polyfill-next-selector { content: ':host > *:not(.core-selected) [scale-up]'; }
-  ::content > *:not(.core-selected) /deep/ [scale-up] {
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [scale-up]'; }
+  ::content > [animate]:not(.core-selected) /deep/ [scale-up] {
     -webkit-transform: scale(0);
     transform: scale(0);
   }
