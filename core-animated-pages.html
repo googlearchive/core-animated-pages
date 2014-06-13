@@ -127,6 +127,11 @@ when switching between them.
       }
     },
 
+    selectedChanged: function(old) {
+      this.lastSelected = old;
+      this.super(arguments);
+    },
+
     selectedItemChanged: function(oldItem) {
       this.super(arguments);
 

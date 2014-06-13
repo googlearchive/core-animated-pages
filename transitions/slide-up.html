@@ -24,9 +24,30 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-up]'; }
   ::content > *:not(.core-selected) /deep/ [slide-up] {
-    -webkit-transform: translateY(100%);
-    transform: translateY(100%);
+    -webkit-transform: translateY(150%);
+    transform: translateY(150%);
+  }
+</core-style>
+
+<core-style id="slide-up-offscreen">
+  polyfill-next-selector { content: ':host.slide-up-offscreen > * [slide-up-offscreen]'; }
+  :host(.slide-up-offscreen) ::content > * /deep/ [slide-up-offscreen] {
+    -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  polyfill-next-selector { content: ':host > .core-selected [slide-up-offscreen]'; }
+  ::content > .core-selected /deep/ [slide-up-offscreen] {
+    -webkit-transform: none;
+    transform: none;
+  }
+
+  polyfill-next-selector { content: ':host > *:not(.core-selected) [slide-up-offscreen]'; }
+  ::content > *:not(.core-selected) /deep/ [slide-up-offscreen] {
+    -webkit-transform: translateY(100vh);
+    transform: translateY(100vh);
   }
 </core-style>
 
 <core-transition-pages id="slide-up" activeClass="slide-up"></core-transition-pages>
+<core-transition-pages id="slide-up-offscreen" activeClass="slide-up-offscreen"></core-transition-pages>
