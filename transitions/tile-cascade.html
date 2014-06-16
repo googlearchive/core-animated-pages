@@ -93,6 +93,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     -webkit-transform: translateY(100%);
     transform: translateY(100%);
   }
+
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div:nth-of-type(12)'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div:nth-of-type(12) {
+    -webkit-transform: translateY(60%);
+    transform: translateY(60%);
+  }
 </core-style>
 
 <core-transition-pages id="tile-cascade" activeClass="tile-cascade" transitionProperty="transform"></core-transition-pages>

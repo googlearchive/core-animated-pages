@@ -91,15 +91,22 @@ when switching between them.
       //
       // force layout!
       src.offsetTop;
-      //
-      // apply selection
-      this.applySelection(src, false);
-      this.applySelection(dst, true);
-      //
-      // start trantision
-      this._transitionElements.forEach(function(transition) {
-        transition.go(this, options);
-      }, this);
+
+      // FIXME(yvonne): some tiles don't cascade without the double rAF
+      // for some reason
+      requestAnimationFrame(function() {
+        requestAnimationFrame(function() {
+          //
+          // apply selection
+          this.applySelection(src, false);
+          this.applySelection(dst, true);
+          //
+          // start trantision
+          this._transitionElements.forEach(function(transition) {
+            transition.go(this, options);
+          }, this);
+        }.bind(this));
+      }.bind(this));
 
       if (!this._transitionElements.length) {
         this.complete();
