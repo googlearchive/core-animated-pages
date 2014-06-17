@@ -379,7 +379,7 @@ Fired when a page transition completes.
         return;
       }
 
-      if (this.hasAttribute('no-transition')) {
+      if (this.hasAttribute('no-transition') || !this._transitionElements || !this._transitionElements.length) {
         this.applySelection(oldItem, false);
         this.applySelection(this.selectedItem, true);
         return;
