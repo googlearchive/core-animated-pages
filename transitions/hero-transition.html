@@ -13,12 +13,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   /* Hide heroes that are not currently transitioning */
   polyfill-next-selector { content: ':host > [animate] [hero]'; }
   ::content > [animate] /deep/ [hero] {
-    visibility: hidden;
+    opacity: 0;
   }
 
   polyfill-next-selector { content: ':host > .core-selected[animate] [hero]'; }
   ::content > .core-selected[animate] /deep/ [hero] {
-    visibility: visible;
+    opacity: 1;
     z-index: 10000;
   }
 
@@ -61,7 +61,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           (CoreStyle.g.transitions.heroDuration || 
           CoreStyle.g.transitions.duration);
 
-      
       scope._heroes.forEach(function(h) {
         var d = h.h0.hasAttribute('hero-delayed') ? CoreStyle.g.transitions.heroDelay : '';
         var wt = [];
