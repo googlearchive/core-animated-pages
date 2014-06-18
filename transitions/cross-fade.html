@@ -12,14 +12,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <core-style id="cross-fade">
   polyfill-next-selector { content: ':host > * [cross-fade]'; }
   ::content > * /deep/ [cross-fade] {
-    -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
-    transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   polyfill-next-selector { content: ':host > * [cross-fade][hero-p]'; }
   ::content > * /deep/ [cross-fade][hero-p] {
-    -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
-    transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   polyfill-next-selector { content: ':host > .core-selected [cross-fade]'; }
