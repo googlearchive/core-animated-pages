@@ -316,21 +316,15 @@ Fired when a page transition completes.
       // force layout!
       src.offsetTop;
 
-      // FIXME(yvonne): some tiles don't cascade without the double rAF
-      // for some reason
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          //
-          // apply selection
-          this.applySelection(src, false);
-          this.applySelection(dst, true);
-          //
-          // start transition
-          this._transitionElements.forEach(function(transition) {
-            transition.go(this, options);
-          }, this);
-        }.bind(this));
-      }.bind(this));
+      //
+      // apply selection
+      this.applySelection(dst, true);
+      this.applySelection(src, false);
+      //
+      // start transition
+      this._transitionElements.forEach(function(transition) {
+        transition.go(this, options);
+      }, this);
 
       if (!this._transitionElements.length) {
         this.complete();
