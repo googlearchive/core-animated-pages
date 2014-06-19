@@ -84,20 +84,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   
   polyfill-next-selector { content: '.core-selected [tile-cascade] > div'; }
   ::content > .core-selected /deep/ [tile-cascade] > div {
-    -webkit-transform: none;
-    transform: none;
-    opacity: 1;
-  }
-
-  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div'; }
-  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div {
-    opacity: 0;
   }
 
   polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade] > div'; }
   ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div {
     -webkit-transform: translateY(100%);
     transform: translateY(100%);
+    opacity: 0;
   }
 </core-style>
 

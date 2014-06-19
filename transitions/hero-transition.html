@@ -188,7 +188,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     },
 
     complete: function(scope, e) {
-      if (e.propertyName === TRANSFORM_CSSNAME) {
+      // if (e.propertyName === TRANSFORM_CSSNAME) {
         var done = false;
         scope._heroes.forEach(function(h) {
           if (h.h1 === e.path[0]) {
@@ -199,7 +199,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         if (done) {
           this.super(arguments);
         }
-      }
+      // }
     }
 
   });
