@@ -90,6 +90,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   ::content > [animate]:not(.core-selected) /deep/ [tile-cascade] > div {
     -webkit-transform: translateY(100%);
     transform: translateY(100%);
+  }
+
+  polyfill-next-selector { content: '[animate]:not(.core-selected) [tile-cascade][fade] > div'; }
+  ::content > [animate]:not(.core-selected) /deep/ [tile-cascade][fade] > div {
     opacity: 0;
   }
 </core-style>
