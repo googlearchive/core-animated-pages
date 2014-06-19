@@ -16,6 +16,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
   }
 
+  polyfill-next-selector { content: ':host > * [cross-fade][bg]'; }
+  ::content > * /deep/ [cross-fade][bg] {
+    -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+    transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
   polyfill-next-selector { content: ':host > * [cross-fade][hero-p]'; }
   ::content > * /deep/ [cross-fade][hero-p] {
     -webkit-transition: background-color {{g.transitions.fadeDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
@@ -27,9 +33,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     opacity: 1;
   }
 
-  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade]:not([hero-p])'; }
-  ::content > [animate]:not(.core-selected) /deep/ [cross-fade]:not([hero-p]) {
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade]:not([hero-p]):not([bg])'; }
+  ::content > [animate]:not(.core-selected) /deep/ [cross-fade]:not([hero-p]):not([bg]) {
     opacity: 0;
+  }
+
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade][bg]'; }
+  ::content > [animate]:not(.core-selected) /deep/ [cross-fade][bg] {
+    background-color: rgba(0, 0, 0, 0);
   }
 
   polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [cross-fade][hero-p]'; }

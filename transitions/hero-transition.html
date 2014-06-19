@@ -11,8 +11,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <core-style id="hero-transition">
   /* Hide heroes that are not currently transitioning */
-  polyfill-next-selector { content: ':host > [animate] [hero]'; }
-  ::content > [animate] /deep/ [hero] {
+  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [hero]'; }
+  ::content > [animate]:not(.core-selected) /deep/ [hero] {
     opacity: 0;
   }
 
