@@ -52,6 +52,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <core-style id="cross-fade-delayed">
   polyfill-next-selector { content: ':host > * [cross-fade-delayed]'; }
   ::content > * /deep/ [cross-fade-delayed] {
+    -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+    transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out;
+  }
+
+  polyfill-next-selector { content: ':host > .core-selected [cross-fade-delayed]'; }
+  ::content > .core-selected /deep/ [cross-fade-delayed] {
     -webkit-transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out {{g.transitions.duration}};
     transition: opacity {{g.transitions.fadeDuration || g.transitions.duration}} ease-out {{g.transitions.duration}};
   }
