@@ -292,6 +292,11 @@ Fired when a page transition completes.
     },
 
     applyTransition: function(src, dst) {
+      if (this.animating) {
+        this.cancelAsync(this.animating);
+        this.animating = null;
+      }
+
       if (this.transitioning.indexOf(src) === -1) {
         this.transitioning.push(src);
       }
@@ -328,10 +333,17 @@ Fired when a page transition completes.
 
       if (!this._transitionElements.length) {
         this.complete();
+      } else {
+        this.animating = this.async(this.complete.bind(this), null, 5000);
       }
     },
 
     complete: function() {
+      if (this.animating) {
+        this.cancelAsync(this.animating);
+        this.animating = null;
+      }
+
       this.transitioning.forEach(function(t) {
         t.removeAttribute('animate');
       });
