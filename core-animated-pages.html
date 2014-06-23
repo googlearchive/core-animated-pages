@@ -297,6 +297,8 @@ Fired when a page transition completes.
         this.animating = null;
       }
 
+      Platform.flush();
+
       if (this.transitioning.indexOf(src) === -1) {
         this.transitioning.push(src);
       }

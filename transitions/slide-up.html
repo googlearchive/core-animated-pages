@@ -48,6 +48,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     transform: translateY(100vh);
     z-index: -1;
   }
+
+  polyfill-rule {
+    content: ':host > [animate]:not(.core-selected) [slide-up-offscreen]';
+    -webkit-transform: translateY(1000px);
+  }
 </core-style>
 
 <core-transition-pages id="slide-up" activeClass="slide-up"></core-transition-pages>
