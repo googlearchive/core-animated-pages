@@ -6,8 +6,11 @@
 <!--
 
 `core-animated-pages` selects one of its children "pages" to show and runs a transition
-when switching between them. Transitions to run are specified in the `transitions`
-attribute as a space-delimited string, 
+when switching between them. The transitions are designed to be pluggable, and can
+accept any object that is an instance of a `core-transition-pages`. Transitions to run
+are specified in the `transitions` attribute as a space-delimited string of `id`s of
+transition elements. Several transitions are available with `core-animated-pages` by
+default, including `hero-transition`, `cross-fade`, and `tile-cascade`.
 
 Example:
 
@@ -42,6 +45,7 @@ Example:
         background-color: green;
       }
     </style>
+    // hero-transition and cross-fade are declared elsewhere
     <core-animated-pages transitions="hero-transition cross-fade">
       <section id="page1">
         <div id="hero1" hero-id="hero" hero></div>
