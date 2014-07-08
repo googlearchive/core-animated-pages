@@ -40,20 +40,25 @@
       .chip {
         display: inline-block;
         position: relative;
-        border-radius: 3px;
         margin: 4px;
-        overflow: hidden;
         text-align: start;
+      }
+
+      .chip-bg {
+        border-radius: 3px;
         background-color: #fff;
         box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.16);
       }
 
       .chip-top {
+        position: relative;
+        border-radius: 3px 3px 0 0;
         width: 200px;
         height: 200px;
       }
 
       .chip-bottom {
+        position: relative;
         padding: 8px;
         line-height: 1.5;
       }
@@ -68,18 +73,23 @@
 
       .card {
         height: 400px;
-        border-radius: 3px;
         text-align: start;
-        overflow: hidden;
+      }
+
+      .card-bg {
+        border-radius: 3px;
         background: #fff;
         box-shadow: 0 6px 20px 0 rgba(0, 0, 0, 0.19);
       }
 
       .card-left {
+        position: relative;
+        border-radius: 3px 0 0 3px;
         width: 400px;
       }
 
       .card-right {
+        position: relative;
         padding: 24px;
       }
 
@@ -103,7 +113,8 @@
 
           <template repeat="{{items as item}}">
 
-            <div class="chip" hero-id="{{item.artist}}-{{item.album}}" hero?="{{selectedAlbum === item }}">
+            <div class="chip">
+              <div class="chip-bg" fit hero-id="{{item.artist}}-{{item.album}}" hero?="{{selectedAlbum === item}}"></div>
               <div class="chip-top" style="background:{{item.color}};" hero-id="{{item.artist}}-{{item.album}}-art" hero?="{{selectedAlbum === item}}"></div>
               <div class="chip-bottom">
                 <div class="chip-album-title">{{item.album}}</div>
@@ -118,7 +129,8 @@
 
       <section id="details">
 
-        <div class="card" layout horizontal hero-id="{{selectedAlbum.artist}}-{{selectedAlbum.album}}" hero on-tap="{{transition}}">
+        <div class="card" layout horizontal relative on-tap="{{transition}}">
+          <div class="card-bg" fit hero-id="{{selectedAlbum.artist}}-{{selectedAlbum.album}}" hero></div>
           <div class="card-left" style="background:{{selectedAlbum.color}};" hero-id="{{selectedAlbum.artist}}-{{selectedAlbum.album}}-art" hero></div>
           <div class="card-right" flex>
             <div layout horizontal center>
