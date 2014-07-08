@@ -1,8 +1,5 @@
 <link href="../core-selector/core-selector.html" rel="import">
 
-<link href="transitions/hero-transition.html" rel="import">
-<link href="transitions/cross-fade.html" rel="import">
-
 <!--
 
 `core-animated-pages` selects one of its children "pages" to show and runs a transition
@@ -71,8 +68,8 @@ In general, a transition is applied to elements marked with a certain attribute.
 Among the transitions included with `core-animated-pages`, script-based transitions such as
 `hero-transition` generally look for elements up to one level of shadowRoot from the
 `core-animated-pages` element, and CSS-based transitions such as `cross-fade` look for elements
-within any shadowRoot within the `core-animated-pages` element. This means you can use 
-custom elements as pages and mark elements in their shadowRoots as heroes, or mark 
+within any shadowRoot within the `core-animated-pages` element. This means you can use
+custom elements as pages and mark elements in their shadowRoots as heroes, or mark
 elements in deeper shadowRoots with other transitions.
 
 Example:
@@ -141,29 +138,32 @@ Example:
       <x-page-2></x-page-2>
     </core-animated-pages>
 
-Note that the container element of the page does not participate in the transition.
+Configuring a transition
+------------------------
 
-    // This does not work
-    <core-animated-pages transitions="cross-fade">
-      <section cross-fade></section>
-      <section cross-fade></section>
-    </core-animated-pages>
+Several common attributes allow you to configure the transition.
 
-    // This works
-    <core-animated-pages transitions="cross-fade">
-      <section>
-        <div cross-fade></div>
-      </section>
-      <section>
-        <div cross-fade></div>
-      </section>
-    </core-animated-pages>
+`delay` delays the transition. If no value is supplied, the default delay
+value is the duration of the transition.
+
+`duration` sets a custom duration for the transition.
+
+When the `self` attribute is applied to the `core-animated-pages` node, this
+applies the supplied transitions on the page container, not the elements inside
+the page.
+
+You can configure most of these values globally for each transition using
+the `CoreStyle.g.transition` object. See the documentation for each transition
+for the property names.
+
+Transitions may also define custom attributes. See each transition's documentation
+for more info.
 
 Dynamically setting up transitions
 ----------------------------------
 
 An easy way to dynamically set up transitions dynamically is to use property binding on
-the transition attributes. 
+the transition attributes.
 
 Example:
 
@@ -289,7 +289,7 @@ Fired when a page transition completes.
         var t = this.getTransition(transitionId);
         if (t) {
           this._transitionElements.push(t);
-          t.setup(this);
+          // t.setup(this);
         }
       }, this);
     },
@@ -298,97 +298,72 @@ Fired when a page transition completes.
       return this.tmeta.byId(transitionId);
     },
 
-    selectionSelect: function(e, detail) {
-      this.updateSelectedItem();
-      // Wait to call applySelection when we run the transition
-    },
-
     applyTransition: function(src, dst) {
-      if (this.animating) {
-        this.cancelAsync(this.animating);
-        this.animating = null;
-      }
-
-      Platform.flush();
-
       if (this.transitioning.indexOf(src) === -1) {
         this.transitioning.push(src);
       }
       if (this.transitioning.indexOf(dst) === -1) {
         this.transitioning.push(dst);
       }
-      // force src, dst to display 
+
+      // force src, dst to display
       src.setAttribute('animate', '');
       dst.setAttribute('animate', '');
-      //
-      var options = {
-        src: src,
-        dst: dst,
-        easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
-      }
 
-      // fire an event so clients have a chance to do something when the
-      // new page becomes visible but before it draws.
-      this.fire('core-animated-pages-transition-prepare');
+      dst.style.visibility = 'hidden';
 
-      //
-      // prepare transition
-      this._transitionElements.forEach(function(transition) {
-        transition.prepare(this, options);
-      }, this);
-      //
-      // force layout!
+      // force layout before preparing transition so we can measure.
       src.offsetTop;
 
       //
-      // apply selection
-      this.applySelection(dst, true);
-      this.applySelection(src, false);
-      //
-      // start transition
+      // setup transitions
+      var anims = [];
       this._transitionElements.forEach(function(transition) {
-        transition.go(this, options);
+        if (transition.setup(this, {
+          src: src,
+          dst: dst
+        })) {
+          anims.push(transition.animation);
+        }
       }, this);
 
-      if (!this._transitionElements.length) {
-        this.complete();
-      } else {
-        this.animating = this.async(this.complete.bind(this), null, 5000);
+      //
+      // if no transition
+      if (!anims.length) {
+        // this.applySelection(dst, true);
+        // this.applySelection(src, false);
+        this.fire('core-animated-pages-transition-end');
+        return;
       }
+
+      //
+      // make both src and dst pages visible
+      anims.push(new Animation(dst, [{'visibility': 'visible'}, {'visibility': 'visible'}], {fill: 'forwards', duration: CoreStyle.g.transitions.duration}));
+
+      // start transition
+      this.player = document.timeline.play(new AnimationGroup(anims));
+      this.player.onfinish = this.complete.bind(this, src, dst);
     },
 
-    complete: function() {
-      if (this.animating) {
-        this.cancelAsync(this.animating);
-        this.animating = null;
-      }
+    complete: function(src, dst, e) {
+      // complete() is called top-down
+      this._transitionElements.forEach(function(transition) {
+        transition.teardown(this);
+      }, this);
 
       this.transitioning.forEach(function(t) {
         t.removeAttribute('animate');
       });
       this.transitioning = [];
 
-      this._transitionElements.forEach(function(transition) {
-        transition.ensureComplete(this);
-      }, this);
+      // need to force layout before removing the effect so we don't get an extra
+      // frame of the "before" state.
+      src.offsetTop;
+
+      this.player.cancel();
+      this.player = null;
 
       this.fire('core-animated-pages-transition-end');
-    },
-    
-    transitionEnd: function(e) {
-      if (this.transitioning.length) {
-        var completed = true;
-        this._transitionElements.forEach(function(transition) {
-          if (!transition.completed) {
-            completed = false;
-          }
-        });
-        if (completed) {
-          this.job('transitionWatch', function() {
-            this.complete();
-          }, 100);
-        }
-      }
     },
 
     selectedChanged: function(old) {
@@ -400,13 +375,10 @@ Fired when a page transition completes.
       this.super(arguments);
 
       if (!oldItem) {
-        this.applySelection(this.selectedItem, true);
         return;
       }
 
       if (this.hasAttribute('no-transition') || !this._transitionElements || !this._transitionElements.length) {
-        this.applySelection(oldItem, false);
-        this.applySelection(this.selectedItem, true);
         return;
       }
 

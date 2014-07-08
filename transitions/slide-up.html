@@ -7,76 +7,87 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 
-<link href="core-transition-pages.html" rel="import">
-
-<core-style id="slide-up">
-  polyfill-next-selector { content: ':host.slide-up > * [slide-up]'; }
-  :host(.slide-up) ::content > * /deep/ [slide-up] {
-    -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
-    transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  polyfill-next-selector { content: ':host > .core-selected [slide-up]'; }
-  ::content > .core-selected /deep/ [slide-up] {
-    -webkit-transform: none;
-    transform: none;
-  }
-
-  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [slide-up]'; }
-  ::content > [animate]:not(.core-selected) /deep/ [slide-up] {
-    -webkit-transform: translateY(150%);
-    transform: translateY(150%);
-  }
-</core-style>
-
-<core-style id="slide-up-offscreen">
-  polyfill-next-selector { content: ':host.slide-up-offscreen > * [slide-up-offscreen]'; }
-  :host(.slide-up-offscreen) ::content > * /deep/ [slide-up-offscreen] {
-    -webkit-transition: -webkit-transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
-    transition: transform {{g.transitions.slideDuration || g.transitions.duration}} cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  polyfill-next-selector { content: ':host > .core-selected [slide-up-offscreen]'; }
-  ::content > .core-selected /deep/ [slide-up-offscreen] {
-    -webkit-transform: none;
-    transform: none;
-  }
-
-  polyfill-next-selector { content: ':host > [animate]:not(.core-selected) [slide-up-offscreen]'; }
-  ::content > [animate]:not(.core-selected) /deep/ [slide-up-offscreen] {
-    -webkit-transform: translateY(100vh);
-    transform: translateY(100vh);
-    z-index: -1;
-  }
-
-  polyfill-rule {
-    content: ':host > [animate]:not(.core-selected) [slide-up-offscreen]';
-    -webkit-transform: translateY(1000px);
-  }
-</core-style>
+<link href="core-pages-transition.html" rel="import">
 
 <!--
 
-`slide-up` slides an element in the outgoing page from the bottom of the window
-and slides in an element in the incoming page from the bottom of the window during
-a page transition. You can configure the duration of the transition with the global
-variable `CoreStyle.g.transitions.slideDuration`.
+`slide-up` slides elements up during a page transition. The element to be animated should set the
+`slide-up` attribute. By default the element slides by an amount equal to its height. You can
+customize the this value with the `amount` attribute.
+
+You can globally configure the duration of the transition with the global variable
+`CoreStyle.g.transitions.slideTransition`.
 
 Example:
 
     <core-animated-pages transition="slide-up">
-      <section>
-        <div id="div1" slide-up></div>
-      </section>
-      <section></section>
+        <section layout vertical>
+            <core-toolbar id="top-toolbar" slide-up>Top Bar</core-toolbar>
+            <div flex>Page 0</div>
+        </section>
+        <section layout vertical>
+            <div flex>Page 1</div>
+            <core-toolbar id="bottom-toolbar" slide-up>Bottom Bar</core-toolbar>
+        </section>
     </core-animated-pages>
 
-@class slide-up
-@extends core-transition-pages
-@status beta
-@homepage github.io
+In the above example, when the page switches from 0 to 1, `#top-toolbar` slides up out of the
+viewport while `#bottom-toolbar` slides into the viewport from the bottom.
 
+`slide-up-self` applies the transition to all container elements:
+
+    <core-animated-pages transition="slide-up-self">
+        <section id="page0">
+            Page 1
+        </section>
+        <section id="page1">
+            Page 2
+        </section>
+    </core-animated-pages>
+
+In the above example, the transition will apply to `#page0` and `#page1`.
+
+@group Pages Transition Elements
+@element slide-up
+@extends core-pages-transition
+@status unstable
 -->
 
-<core-transition-pages id="slide-up" activeClass="slide-up"></core-transition-pages>
-<core-transition-pages id="slide-up-offscreen" activeClass="slide-up-offscreen"></core-transition-pages>
+<polymer-element name="slide-up" extends="core-pages-transition">
+<script>
+(function() {
+
+Polymer({
+
+  publish: {
+
+    amount: '100%',
+
+  },
+
+  selector: '[slide-up]',
+
+  prefix: 'slide',
+
+  srcEffectForNode: function(node) {
+    return [
+      {'transform': 'translateY(0)'},
+      {'transform': 'translateY(-' + (node.getAttribute('amount') || this.amount) + ')'}
+    ];
+  },
+
+  dstEffectForNode: function(node) {
+    return [
+      {'transform': 'translateY(' + (node.getAttribute('amount') || this.amount) + ')'},
+      {'transform': 'translateY(0)'}
+    ];
+  }
+
+});
+
+}());
+</script>
+</polymer-element>
+
+<slide-up id="slide-up"></slide-up>
+<slide-up id="slide-up-self" self></slide-up>

@@ -2,10 +2,21 @@
 <html>
 <head>
 
-  <script src="../../platform/platform.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+
+  <title>core-animated-pages simple</title>
+
+  <script src="../../webcomponentsjs/webcomponents.js"></script>
+
   <link href="../core-animated-pages.html" rel="import">
+
+  <link href="../transitions/slide-up.html" rel="import">
+  <link href="../transitions/slide-down.html" rel="import">
+  <link href="../transitions/slide-left.html" rel="import">
+  <link href="../transitions/slide-right.html" rel="import">
   <link href="../transitions/cross-fade.html" rel="import">
-  <link href="../transitions/slide-from-right.html" rel="import">
 
   <style>
     body {
@@ -32,12 +43,16 @@
 
 </head>
 <body unresolved>
+  The transition will be applied to both src and dst pages:
   <select onchange="change();">
-    <option value="cross-fade-all" selected>cross-fade-all</option>
-    <option value="slide-from-right">slide-from-right</option>
+    <option value="slide-up-self">slide-up</option>
+    <option value="slide-down-self">slide-down</option>
+    <option value="slide-left-self">slide-left</option>
+    <option value="slide-right-self">slide-right</option>
+    <option value="cross-fade-self">cross-fade</option>
   </select>
 
-  <core-animated-pages onclick="stuff();" transitions="cross-fade-all">
+  <core-animated-pages onclick="stuff();" transitions="slide-up-self">
     <section>
       <div layout vertical center center-justified style="background:red;">
         <div>1</div>
@@ -75,6 +90,12 @@
     var max = 4;
     function stuff() {
       var p = document.querySelector('core-animated-pages');
+
+      // FIXME queue up multiple transitions?
+      if (p.player) {
+        return;
+      }
+
       if (up && p.selected === max || !up && p.selected === 0) {
         up = !up;
       }

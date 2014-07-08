@@ -1,0 +1,201 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link href="../../polymer/polymer.html" rel="import">
+<link href="../../core-animation/web-animations.html" rel="import">
+<link href="../../core-style/core-style.html" rel="import">
+<link href="../../core-transition/core-transition.html" rel="import">
+
+<!--
+
+`core-pages-transition` represents a page transition implemented with web animations. It is
+used to implement transitions in `core-animated-pages`.
+
+A page transition animates elements in two pages: the incoming page and the outgoing page.
+The user marks the elements to be animated via special attributes specified by the transition.
+See the individual transition pages and the documentation for `core-animated-pages` for more
+info on the syntax.
+
+@group Pages Transition Elements
+@element core-pages-transition
+@extends core-transition
+@status unstable
+@homepage github.io
+-->
+
+<!--
+Fired when the transition completes.
+
+@event core-transitionend
+-->
+
+<polymer-element name="core-pages-transition" extends="core-transition">
+<script>
+
+(function () {
+
+// create some basic transition styling data.
+var transitions = CoreStyle.g.transitions = CoreStyle.g.transitions || {};
+
+transitions.easing = 'cubic-bezier(0.4, 0, 0.2, 1)';
+
+transitions.duration = 500;
+transitions.heroDelay = 50;
+transitions.scaleDelay = 500;
+transitions.cascadeFadeDuration = 250;
+
+transitions.xfadeDelay = 5000;
+
+var hasShadowDOMPolyfill = window.ShadowDOMPolyfill;
+
+Polymer({
+
+  selector: '',
+
+  prefix: '',
+
+  get easing() {
+    return CoreStyle.g.transitions.easing;
+  },
+
+  get duration() {
+    return CoreStyle.g.transitions[this.prefix + 'Duration'] || CoreStyle.g.transitions.duration;
+  },
+
+  get delay() {
+    return CoreStyle.g.transitions[this.prefix + 'Delay'] || CoreStyle.g.transitions[this.prefix + 'Duration'] || CoreStyle.g.transitions.duration;
+  },
+
+  findInShadows: function(node, selector) {
+    // carefully look into ::shadow with polyfill specific hack
+    return node.querySelector(selector) || (hasShadowDOMPolyfill ?
+        Platform.queryAllShadows(node, selector) :
+        node.querySelector('::shadow ' + selector));
+  },
+
+  findAllInShadows: function(node, selector) {
+    if (hasShadowDOMPolyfill) {
+      var nodes = node.querySelectorAll(selector).array();
+      var shadowNodes = Platform.queryAllShadows(node, selector, true);
+      return nodes.concat(shadowNodes);
+    } else {
+      return node.querySelectorAll(selector).array().concat(node.shadowRoot ? node.shadowRoot.querySelectorAll(selector).array() : []);
+    }
+  },
+
+  effectForNode: function(node, isSrc) {
+    return null;
+  },
+
+  timingForNode: function(node) {
+    var timing = {
+      duration: this.duration,
+      easing: this.easing,
+      fill: 'both'
+    }
+    if (node.hasAttribute('delay')) {
+      timing.delay = parseInt(node.getAttribute('delay')) || this.delay;
+    }
+    return timing;
+  },
+
+  /**
+   * Set up the animation by looking for nodes to animate in the source and destination pages,
+   * and creating the web animation object that represents the transition.
+   *
+   * @method setup
+   * @param node {core-animated-pages} The `core-animated-pages` object
+   * @param options {Object}
+   * @param options.dst {Object} The incoming page
+   * @param options.src {Object} The outgoing page
+   * @return {Animation} A web animation object
+   */
+  setup: function(node, options) {
+    var anims = [];
+
+    if (this.hasAttribute('self')) {
+
+      anims.push(new Animation(options.src, this.srcEffectForNode(options.src), this.timingForNode(options.src)));
+      anims.push(new Animation(options.dst, this.dstEffectForNode(options.dst), this.timingForNode(options.dst)));
+
+    } else {
+
+      var targets = this.findAllInShadows(options.src, this.selector);
+      targets.forEach(function(t) {
+        anims.push(new Animation(t, this.srcEffectForNode(t), this.timingForNode(t)));
+      }.bind(this));
+
+      targets = this.findAllInShadows(options.dst, this.selector);
+      targets.forEach(function(t) {
+        anims.push(new Animation(t, this.dstEffectForNode(t), this.timingForNode(t)));
+      }.bind(this));
+
+      // also match the container node
+      if (options.src.matches(this.selector)) {
+        anims.push(new Animation(options.src, this.srcEffectForNode(options.src), this.timingForNode(options.src)));
+      }
+      if (options.dst.matches(this.selector)) {
+        anims.push(new Animation(options.dst, this.dstEffectForNode(options.dst), this.timingForNode(options.dst)));
+      }
+    }
+
+    if (anims.length > 1) {
+      this.animation = new AnimationGroup(anims);
+    } else if (anims.length === 1) {
+      this.animation = anims[0];
+    } else {
+      this.animation = null;
+    }
+
+    return this.animation;
+  },
+
+  /**
+   * Runs a page transition. The `setup` method must be called before calling this method.
+   *
+   * @method go
+   * @param node {core-animated-pages} The `core-animated-pages` object
+   * @param options {Object}
+   * @param options.animation {Animation} A web animation object
+   */
+  go: function(node, options) {
+    node.player = document.timeline.play(options.animation);
+    node.player.onfinish = this.complete.bind(this, node);
+  },
+
+  /**
+   * Called when the animation completes. This function also fires the `core-transition-end`
+   * event.
+   *
+   * @method complete
+   * @param {core-animated-pages} The `core-animated-pages` object
+   */
+  complete: function(node) {
+    this.teardown(node);
+
+    node.player.cancel();
+    node.player = null;
+    this.fire('core-transitionend', this, node);
+  },
+
+  /**
+   * Tear down the animation.
+   *
+   * @method teardown
+   * @param {core-animated-pages} The `core-animated-pages` object
+   */
+  teardown: function(node) {
+  }
+
+});
+
+})();
+
+</script>
+</polymer-element>

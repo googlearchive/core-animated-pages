@@ -1,0 +1,93 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link href="core-pages-transition.html" rel="import">
+
+<!--
+
+`slide-left` slides elements left during a page transition. The element to be animated
+should set the `slide-left` attribute. By default the element slides by an amount equal
+to its width. You can customize the this value with the `amount` attribute.
+
+You can globally configure the duration of the transition with the global variable
+`CoreStyle.g.transitions.slideTransition`.
+
+Example:
+
+    <core-animated-pages transition="slide-left">
+        <section layout horizontal>
+            <div id="left-sidebar" slide-left>Left Bar</div>
+            <div>Page 0</div>
+        </section>
+        <section layout horizontal>
+            <div flex>Page 1</div>
+            <div id="right-sidebar" slide-left>Right Bar</div>
+        </section>
+    </core-animated-pages>
+
+In the above example, when the page switches from 0 to 1, `#left-sidebar` slides left out of the
+viewport while `#right-sidebar` slides into the viewport from the right.
+
+`slide-left-self` applies the transition to all container elements:
+
+    <core-animated-pages transition="slide-left-self">
+      <section id="page0">
+          Page 1
+      </section>
+      <section id="page1">
+          Page 2
+      </section>
+    </core-animated-pages>
+
+In the above example, the transition will apply to `#page0` and `#page1`.
+
+@group Pages Transition Elements
+@element slide-left
+@extends core-pages-transition
+@status unstable
+-->
+
+<polymer-element name="slide-left" extends="core-pages-transition">
+<script>
+(function() {
+
+Polymer({
+
+  publish: {
+
+    amount: '100%'
+
+  },
+
+  selector: '[slide-left]',
+
+  prefix: 'slide',
+
+  srcEffectForNode: function(node) {
+    return [
+      {'transform': 'translateX(0)'},
+      {'transform': 'translateX(-' + (node.getAttribute('amount') || this.amount) + ')'}
+    ];
+  },
+
+  dstEffectForNode: function(node) {
+    return [
+      {'transform': 'translateX(' + (node.getAttribute('amount') || this.amount) + ')'},
+      {'transform': 'translateX(0)'}
+    ];
+  }
+
+});
+
+}());
+</script>
+</polymer-element>
+
+<slide-left id="slide-left"></slide-left>
+<slide-left id="slide-left-self" self></slide-left>
