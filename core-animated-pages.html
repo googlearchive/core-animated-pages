@@ -442,11 +442,11 @@ Fired when a page transition completes.
 
     resizerShouldNotify: function(el) {
       // Only notify descendents of selected item
-      while (el != this) {
+      while (el && (el != this)) {
         if (el == this.selectedItem) {
           return true;
         }
-        el = el.parentElement;
+        el = el.parentElement || (el.parentNode && el.parentNode.host);
       }
     }
 
