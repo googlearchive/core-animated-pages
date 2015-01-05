@@ -420,6 +420,7 @@ Fired when a page transition completes.
 
       if (!oldItem) {
         this.applySelection(this.selectedItem, true);
+        this.async(this.notifyResize);
         return;
       }
 
